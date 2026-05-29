@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="sv">
+
+<head>
+    <meta charset="UTF-8">
+    <title>aMAZEing Minds</title>
+    <script src="https://unpkg.com/aframe@1.5.0/dist/aframe-master.min.js"></script>
+    <script type="module" src="js/components/maze-builder.js"></script>
+    <script type="module" src="js/components/player-controller.js"></script>
+    <script type="module" src="js/main.js"></script>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+
+<body>
+
+    <div id="startScreen">
+        <h1>aMAZEing Minds</h1>
+        <p>Välj ett ämne — svara rätt på alla frågor och hitta utgången!</p>
+        <div class="subjectGrid">
+            <button class="subjectBtn" data-subject="matte">Matematik</button>
+            <button class="subjectBtn" data-subject="svenska">Svenska</button>
+            <button class="subjectBtn" data-subject="engelska">Engelska</button>
+            <button class="subjectBtn" data-subject="no">NO</button>
+            <button class="subjectBtn" data-subject="so">Geografi</button>
+            <button class="subjectBtn" data-subject="historia">Historia</button>
+        </div>
+        <button id="startBtn" disabled>Starta spelet</button>
+    </div>
+
+    <div id="modal">
+        <div class="modalBox">
+            <div class="subject-tag" id="modalSubject"></div>
+            <h2 id="modalQuestion"></h2>
+            <div class="answerGrid" id="answerGrid"></div>
+            <div id="modalFeedback"></div>
+        </div>
+    </div>
+
+    <div id="levelComplete">
+        <div class="lcBox">
+            <h2 id="lcTitle">🎉 Nivå klar!</h2>
+            <p id="lcText"></p>
+            <button id="nextLevelBtn">Nästa nivå →</button>
+        </div>
+    </div>
+
+    <div id="hud">WASD = gå &nbsp;|&nbsp; Mus = titta runt</div>
+    <div id="levelBadge">Nivå <span id="levelNum">1</span></div>
+    <div id="progressBar">✅ <span id="qDone">0</span> / <span id="qTotal">0</span></div>
+
+    <a-scene id="scene" maze-builder fog="type: linear; color: #87ceeb; near: 14; far: 30" renderer="antialias: true"
+        vr-mode-ui="enabled: false">
+        <a-sky color="#87ceeb"></a-sky>
+        <a-light type="directional" intensity="2.0" position="2 6 1" color="#fff8e0"></a-light>
+        <a-light type="ambient" intensity="0.8" color="#d0eeff"></a-light>
+
+        <a-plane id="floor" rotation="-90 0 0" material="color: #4a8a3a; roughness: 1"></a-plane>
+
+        <a-entity id="exit">
+            <a-box id="exitGlow" width="2.2" height="3" depth="0.15" position="0 1.5 0"
+                material="color: #ff4444; emissive: #aa0000; emissiveIntensity: 0.5; opacity: 0.5; transparent: true"></a-box>
+            <a-text id="exitText" value="🔒 Svara på alla frågor" align="center" position="0 3.3 0" color="#ff8888"
+                width="5" wrap-count="20"></a-text>
+            <a-light type="point" intensity="1" distance="5" color="#ff4444" id="exitLight"></a-light>
+        </a-entity>
+
+        <a-entity id="rig" position="0 0 0" player-controller>
+            <a-camera id="cam" look-controls="pointerLockEnabled: true; reverseMouseDrag: false"
+                wasd-controls="enabled: false" position="0 1.7 0" near="0.1"></a-camera>
+        </a-entity>
+
+    </a-scene>
+
+</body>
+
+</html>
