@@ -20,26 +20,59 @@ body {
     color: white;
 }
 
-#startScreen h1 {
+.startModal {
+    width: min(90vw, 540px);
+    padding: 34px;
+    background: rgba(4, 28, 4, 0.82);
+    border: 2px solid #4a9a4a;
+    border-radius: 16px;
+    box-shadow: 0 24px 80px rgba(0, 0, 0, 0.35);
+    text-align: center;
+}
+
+.startModal.hidden {
+    display: none;
+}
+
+.startModal h1 {
     font-size: 2.4rem;
     color: #90ee90;
     margin-bottom: 6px;
 }
 
-#startScreen p {
-    color: #b0d0b0;
-    margin-bottom: 28px;
+.startModal h2 {
+    font-size: 0.9rem;
+    letter-spacing: 0.08em;
+    margin: 0 0 10px;
+    text-transform: uppercase;
+    color: #ffcc00;
 }
 
+.startModal p {
+    color: #b0d0b0;
+    margin-bottom: 24px;
+    text-align: center;
+}
+
+.gradeGrid,
 .subjectGrid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
     gap: 12px;
-    margin-bottom: 28px;
     max-width: 480px;
     width: 90%;
 }
 
+.gradeGrid {
+    grid-template-columns: repeat(9, 1fr);
+    margin-bottom: 24px;
+}
+
+.subjectGrid {
+    grid-template-columns: repeat(3, 1fr);
+    margin-bottom: 28px;
+}
+
+.gradeBtn,
 .subjectBtn {
     padding: 16px 8px;
     border-radius: 12px;
@@ -51,10 +84,18 @@ body {
     transition: all 0.2s;
 }
 
+.gradeBtn {
+    aspect-ratio: 1;
+    padding: 0;
+    font-weight: bold;
+}
+
+.gradeBtn:hover,
 .subjectBtn:hover {
     border-color: #90ee90;
 }
 
+.gradeBtn.selected,
 .subjectBtn.selected {
     border-color: #ffcc00;
     color: #ffcc00;
@@ -75,6 +116,27 @@ body {
 
 #startBtn.ready {
     opacity: 1;
+}
+
+.startActions {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+}
+
+.secondaryBtn {
+    padding: 14px 24px;
+    background: rgba(0, 80, 0, 0.4);
+    color: white;
+    border: 2px solid #2a6a2a;
+    border-radius: 24px;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.secondaryBtn:hover {
+    border-color: #90ee90;
 }
 
 #hud {
@@ -242,4 +304,23 @@ body {
     font-size: 1rem;
     font-weight: bold;
     cursor: pointer;
+}
+
+@media (max-width: 560px) {
+    .startModal {
+        padding: 24px;
+    }
+
+    .gradeGrid {
+        grid-template-columns: repeat(3, 1fr);
+        max-width: 280px;
+    }
+
+    .subjectGrid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .startActions {
+        flex-direction: column;
+    }
 }

@@ -12,17 +12,43 @@
 <body>
 
     <div id="startScreen">
-        <h1>aMAZEing Minds</h1>
-        <p>Välj ett ämne — svara rätt på alla frågor och hitta utgången!</p>
-        <div class="subjectGrid">
-            <button class="subjectBtn" data-subject="matte">Matematik</button>
-            <button class="subjectBtn" data-subject="svenska">Svenska</button>
-            <button class="subjectBtn" data-subject="engelska">Engelska</button>
-            <button class="subjectBtn" data-subject="no">NO</button>
-            <button class="subjectBtn" data-subject="so">Geografi</button>
-            <button class="subjectBtn" data-subject="historia">Historia</button>
+        <div class="startModal" id="gradeChoice">
+            <h1>aMAZEing Minds</h1>
+            <p>Välj din årskurs så får du frågor som passar dig.</p>
+
+            <h2>Årskurs</h2>
+            <div class="gradeGrid">
+                <button class="gradeBtn" data-grade="1">1</button>
+                <button class="gradeBtn" data-grade="2">2</button>
+                <button class="gradeBtn" data-grade="3">3</button>
+                <button class="gradeBtn" data-grade="4">4</button>
+                <button class="gradeBtn" data-grade="5">5</button>
+                <button class="gradeBtn" data-grade="6">6</button>
+                <button class="gradeBtn" data-grade="7">7</button>
+                <button class="gradeBtn" data-grade="8">8</button>
+                <button class="gradeBtn" data-grade="9">9</button>
+            </div>
         </div>
-        <button id="startBtn" disabled>Starta spelet</button>
+
+        <div class="startModal hidden" id="subjectChoice">
+            <h1>aMAZEing Minds</h1>
+            <p id="selectedGradeText"></p>
+
+            <h2>Ämne</h2>
+            <div class="subjectGrid">
+                <button class="subjectBtn" data-subject="matte">Matematik</button>
+                <button class="subjectBtn" data-subject="svenska">Svenska</button>
+                <button class="subjectBtn" data-subject="engelska">Engelska</button>
+                <button class="subjectBtn" data-subject="no">NO</button>
+                <button class="subjectBtn" data-subject="so">Geografi</button>
+                <button class="subjectBtn" data-subject="historia">Historia</button>
+            </div>
+
+            <div class="startActions">
+                <button class="secondaryBtn" id="backToGradeBtn">Tillbaka</button>
+                <button id="startBtn" disabled>Starta spelet</button>
+            </div>
+        </div>
     </div>
 
     <div id="modal">

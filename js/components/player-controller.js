@@ -1,6 +1,6 @@
 import { cellX, cellZ } from './maze-builder.js';
 import { isModalOpen, setExitLocked, showLevelComplete, setHUDMessage, updateHUD, openModal } from '../ui.js';
-import { questions } from '../questions.js';
+import { getQuestionPool } from '../questions.js';
 
 const S = 2;
 
@@ -8,6 +8,7 @@ AFRAME.registerComponent('player-controller', {
     schema: {
         speed: { type: 'number', default: 0.055 },
         subject: { type: 'string', default: '' },
+        grade: { type: 'int', default: 7 },
     },
 
     init() {
@@ -20,6 +21,7 @@ AFRAME.registerComponent('player-controller', {
         this.triggerMarkers = [];
         this.triggersAnswered = new Set();
         this.usedQuestions = [];
+        this.questionPoolKey = '';
         this.totalQuestionsAnswered = 0;
         this.questionsForLevel = 0;
 
@@ -45,9 +47,14 @@ AFRAME.registerComponent('player-controller', {
         this.lvl = lvl;
         this.levelIndex = levelIndex;
         this.triggersAnswered = new Set();
-        this.usedQuestions = [];
         this.totalQuestionsAnswered = 0;
         this.questionsForLevel = lvl.totalQuestions;
+
+        const nextPoolKey = `${this.data.grade}-${this.data.subject}`;
+        if (levelIndex === 0 || this.questionPoolKey !== nextPoolKey) {
+            this.usedQuestions = [];
+            this.questionPoolKey = nextPoolKey;
+        }
 
         this.triggerMarkers = [];
         lvl.triggerCells.forEach((cell, i) => {
@@ -125,7 +132,7 @@ AFRAME.registerComponent('player-controller', {
         if (this.totalQuestionsAnswered >= this.questionsForLevel) return;
 
         const q = this.getQuestion();
-        openModal(this.data.subject, q, (correct) => {
+        openModal(this.data.subject, this.data.grade, q, (correct) => {
             if (correct) {
                 this.totalQuestionsAnswered++;
                 updateHUD(this.levelIndex, this.totalQuestionsAnswered, this.questionsForLevel);
@@ -140,7 +147,7 @@ AFRAME.registerComponent('player-controller', {
     },
 
     getQuestion() {
-        const pool = questions[this.data.subject];
+        const pool = getQuestionPool(this.data.subject, this.data.grade);
         const avail = pool.filter((_, i) => !this.usedQuestions.includes(i));
         const src = avail.length > 0 ? avail : pool;
         const q = src[Math.floor(Math.random() * src.length)];
