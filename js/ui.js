@@ -1,4 +1,4 @@
-import { subjectNames } from './questions.js';
+import { gradeNames, subjectNames } from './questions.js';
 import { levels } from './levels.js';
 
 // =============================================
@@ -39,8 +39,8 @@ export function setExitLocked(locked) {
 // =============================================
 // MODAL
 // =============================================
-export function openModal(subject, question, onAnswer) {
-    document.getElementById('modalSubject').textContent = subjectNames[subject];
+export function openModal(subject, grade, question, onAnswer) {
+    document.getElementById('modalSubject').textContent = `${subjectNames[subject]} | ${gradeNames[grade]}`;
     document.getElementById('modalQuestion').textContent = question.q;
     document.getElementById('modalFeedback').textContent = '';
 
@@ -115,22 +115,53 @@ export function showLevelComplete(levelIndex, subject, onNext) {
 // START
 // =============================================
 export function initStartScreen(onStart) {
+    const startBtn = document.getElementById('startBtn');
+    const gradeChoice = document.getElementById('gradeChoice');
+    const subjectChoice = document.getElementById('subjectChoice');
+    const selectedGradeText = document.getElementById('selectedGradeText');
+    const backToGradeBtn = document.getElementById('backToGradeBtn');
+
+    function updateStartButton() {
+        const ready = startBtn.dataset.grade && startBtn.dataset.subject;
+        startBtn.disabled = !ready;
+        startBtn.classList.toggle('ready', ready);
+    }
+
+    document.querySelectorAll('.gradeBtn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('.gradeBtn').forEach(b => b.classList.remove('selected'));
+            btn.classList.add('selected');
+            startBtn.dataset.grade = btn.dataset.grade;
+            selectedGradeText.textContent = `${gradeNames[btn.dataset.grade]} vald. Välj ett ämne för att fortsätta.`;
+            gradeChoice.classList.add('hidden');
+            subjectChoice.classList.remove('hidden');
+            updateStartButton();
+        });
+    });
+
     document.querySelectorAll('.subjectBtn').forEach(btn => {
         btn.addEventListener('click', () => {
             document.querySelectorAll('.subjectBtn').forEach(b => b.classList.remove('selected'));
             btn.classList.add('selected');
 
-            const startBtn = document.getElementById('startBtn');
-            startBtn.classList.add('ready');
-            startBtn.disabled = false;
             startBtn.dataset.subject = btn.dataset.subject;
+            updateStartButton();
         });
     });
 
-    document.getElementById('startBtn').addEventListener('click', () => {
-        const subject = document.getElementById('startBtn').dataset.subject;
-        if (!subject) return;
+    backToGradeBtn.addEventListener('click', () => {
+        document.querySelectorAll('.subjectBtn').forEach(b => b.classList.remove('selected'));
+        delete startBtn.dataset.subject;
+        startBtn.disabled = true;
+        startBtn.classList.remove('ready');
+        subjectChoice.classList.add('hidden');
+        gradeChoice.classList.remove('hidden');
+    });
+
+    startBtn.addEventListener('click', () => {
+        const { grade, subject } = startBtn.dataset;
+        if (!grade || !subject) return;
         document.getElementById('startScreen').style.display = 'none';
-        onStart(subject);
+        onStart(grade, subject);
     });
 }
