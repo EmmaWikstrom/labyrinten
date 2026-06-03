@@ -1,3 +1,6 @@
+import './components/maze-builder.js';
+import './components/player-controller.js';
+
 import { initStartScreen, showHUD } from './ui.js';
 
 initStartScreen((subject) => {
