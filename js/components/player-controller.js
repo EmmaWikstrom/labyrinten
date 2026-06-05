@@ -7,6 +7,10 @@ const AXIS_DEADZONE = 0.15;
 const FORWARD = new THREE.Vector3();
 const RIGHT = new THREE.Vector3();
 const WORLD_UP = new THREE.Vector3(0, 1, 0);
+const GAMEPAD_AXIS_PAIRS = [
+    [2, 3],
+    [0, 1],
+];
 
 AFRAME.registerComponent('player-controller', {
     schema: {
@@ -120,8 +124,12 @@ AFRAME.registerComponent('player-controller', {
             movement.right += 1;
         }
 
-        movement.forward += -this.vrAxes.y;
-        movement.right += this.vrAxes.x;
+        const gamepadAxes = this.getGamepadAxes();
+        const vrX = gamepadAxes.x !== 0 ? gamepadAxes.x : this.vrAxes.x;
+        const vrY = gamepadAxes.y !== 0 ? gamepadAxes.y : this.vrAxes.y;
+
+        movement.forward += -vrY;
+        movement.right += vrX;
 
         const dx = (FORWARD.x * movement.forward + RIGHT.x * movement.right) * speed;
         const dz = (FORWARD.z * movement.forward + RIGHT.z * movement.right) * speed;
@@ -198,6 +206,29 @@ AFRAME.registerComponent('player-controller', {
     setVrAxes(x = 0, y = 0) {
         this.vrAxes.x = Math.abs(x) > AXIS_DEADZONE ? x : 0;
         this.vrAxes.y = Math.abs(y) > AXIS_DEADZONE ? y : 0;
+    },
+
+    getGamepadAxes() {
+        if (!navigator.getGamepads) return { x: 0, y: 0 };
+
+        let best = { x: 0, y: 0, strength: 0 };
+        navigator.getGamepads().forEach(gamepad => {
+            if (!gamepad) return;
+
+            GAMEPAD_AXIS_PAIRS.forEach(([xIndex, yIndex]) => {
+                const x = gamepad.axes[xIndex] || 0;
+                const y = gamepad.axes[yIndex] || 0;
+                const filteredX = Math.abs(x) > AXIS_DEADZONE ? x : 0;
+                const filteredY = Math.abs(y) > AXIS_DEADZONE ? y : 0;
+                const strength = Math.abs(filteredX) + Math.abs(filteredY);
+
+                if (strength > best.strength) {
+                    best = { x: filteredX, y: filteredY, strength };
+                }
+            });
+        });
+
+        return { x: best.x, y: best.y };
     },
 
     getMovementVector() {
