@@ -53,12 +53,16 @@ export function openModal(subject, grade, question, onAnswer) {
         btn.textContent = ans;
         btn.addEventListener('click', () => {
             const correct = i === question.correct;
-            handleAnswer(btn, correct, grid, () => onAnswer(correct));
+            handleAnswer(btn, correct, grid, () => {
+                closeVRModal();
+                onAnswer(correct);
+            });
         });
         grid.appendChild(btn);
     });
 
     document.getElementById('modal').classList.add('open');
+    openVRModal(subject, grade, question, onAnswer);
 }
 
 function handleAnswer(btn, correct, grid, callback) {
@@ -87,6 +91,107 @@ function handleAnswer(btn, correct, grid, callback) {
 
 export function isModalOpen() {
     return document.getElementById('modal').classList.contains('open');
+}
+
+function openVRModal(subject, grade, question, onAnswer) {
+    const scene = document.querySelector('a-scene');
+    const camera = document.getElementById('cam');
+    if (!scene || !camera || !scene.is('vr-mode')) return;
+
+    closeVRModal();
+
+    const panel = document.createElement('a-entity');
+    panel.id = 'vrQuestionModal';
+    panel.setAttribute('position', '0 -0.05 -2.3');
+
+    const background = document.createElement('a-plane');
+    background.setAttribute('width', '2.6');
+    background.setAttribute('height', '2.1');
+    background.setAttribute('material', 'color: #0d2a0d; opacity: 0.96; transparent: true; side: double');
+    panel.appendChild(background);
+
+    const subjectLabel = document.createElement('a-text');
+    subjectLabel.setAttribute('value', `${subjectNames[subject]} | ${gradeNames[grade]}`);
+    subjectLabel.setAttribute('align', 'center');
+    subjectLabel.setAttribute('position', '0 0.85 0.02');
+    subjectLabel.setAttribute('color', '#90ee90');
+    subjectLabel.setAttribute('width', '2.3');
+    panel.appendChild(subjectLabel);
+
+    const questionText = document.createElement('a-text');
+    questionText.setAttribute('value', question.q);
+    questionText.setAttribute('align', 'center');
+    questionText.setAttribute('position', '0 0.55 0.02');
+    questionText.setAttribute('color', '#ffffff');
+    questionText.setAttribute('width', '2.3');
+    questionText.setAttribute('wrap-count', '34');
+    panel.appendChild(questionText);
+
+    const feedback = document.createElement('a-text');
+    feedback.setAttribute('value', '');
+    feedback.setAttribute('align', 'center');
+    feedback.setAttribute('position', '0 -0.86 0.03');
+    feedback.setAttribute('color', '#ffdd00');
+    feedback.setAttribute('width', '2.2');
+    panel.appendChild(feedback);
+
+    let answered = false;
+    question.answers.forEach((answer, index) => {
+        const option = createVRAnswer(answer, index);
+        option.addEventListener('click', () => {
+            if (answered) return;
+
+            const correct = index === question.correct;
+            if (correct) {
+                answered = true;
+                option.setAttribute('material', 'color: #2f9e44; emissive: #1f7a34; emissiveIntensity: 0.25');
+                feedback.setAttribute('value', 'Ratt!');
+                setTimeout(() => {
+                    document.getElementById('modal').classList.remove('open');
+                    closeVRModal();
+                    onAnswer(true);
+                }, 650);
+            } else {
+                option.setAttribute('material', 'color: #b02a37; emissive: #7a1018; emissiveIntensity: 0.25');
+                feedback.setAttribute('value', 'Fel - forsok igen!');
+                setTimeout(() => {
+                    option.setAttribute('material', 'color: #155c9e; emissive: #0b3563; emissiveIntensity: 0.15');
+                    feedback.setAttribute('value', '');
+                }, 900);
+            }
+        });
+        panel.appendChild(option);
+    });
+
+    camera.appendChild(panel);
+}
+
+function createVRAnswer(answer, index) {
+    const option = document.createElement('a-plane');
+    const y = 0.12 - index * 0.3;
+    option.classList.add('clickable');
+    option.setAttribute('width', '2.15');
+    option.setAttribute('height', '0.22');
+    option.setAttribute('position', `0 ${y} 0.03`);
+    option.setAttribute('material', 'color: #155c9e; emissive: #0b3563; emissiveIntensity: 0.15');
+
+    const label = document.createElement('a-text');
+    label.setAttribute('value', answer);
+    label.setAttribute('align', 'center');
+    label.setAttribute('position', '0 -0.035 0.02');
+    label.setAttribute('color', '#ffffff');
+    label.setAttribute('width', '2');
+    label.setAttribute('wrap-count', '28');
+    option.appendChild(label);
+
+    return option;
+}
+
+function closeVRModal() {
+    const vrModal = document.getElementById('vrQuestionModal');
+    if (vrModal && vrModal.parentNode) {
+        vrModal.parentNode.removeChild(vrModal);
+    }
 }
 
 // =============================================
