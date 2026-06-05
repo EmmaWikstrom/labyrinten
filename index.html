@@ -68,12 +68,11 @@
         </div>
     </div>
 
-    <div id="hud">WASD = gå &nbsp;|&nbsp; Mus = titta runt</div>
+    <div id="hud">WASD / thumbstick = gå &nbsp;|&nbsp; Mus / headset = titta runt</div>
     <div id="levelBadge">Nivå <span id="levelNum">1</span></div>
     <div id="progressBar">✅ <span id="qDone">0</span> / <span id="qTotal">0</span></div>
 
-    <a-scene id="scene" maze-builder fog="type: linear; color: #87ceeb; near: 14; far: 30" renderer="antialias: true"
-        vr-mode-ui="enabled: false">
+    <a-scene id="scene" maze-builder fog="type: linear; color: #87ceeb; near: 14; far: 30" renderer="antialias: true">
         <a-sky color="#87ceeb"></a-sky>
         <a-light type="directional" intensity="2.0" position="2 6 1" color="#fff8e0"></a-light>
         <a-light type="ambient" intensity="0.8" color="#d0eeff"></a-light>
@@ -91,6 +90,8 @@
         <a-entity id="rig" position="0 0 0" player-controller>
             <a-camera id="cam" look-controls="pointerLockEnabled: true; reverseMouseDrag: false"
                 wasd-controls="enabled: false" position="0 1.7 0" near="0.1"></a-camera>
+            <a-entity id="leftHand" hand-controls="hand: left"></a-entity>
+            <a-entity id="rightHand" hand-controls="hand: right"></a-entity>
         </a-entity>
 
     </a-scene>

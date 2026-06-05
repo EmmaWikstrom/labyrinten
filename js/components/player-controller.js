@@ -3,6 +3,7 @@ import { isModalOpen, setExitLocked, showLevelComplete, setHUDMessage, updateHUD
 import { getQuestionPool } from '../questions.js';
 
 const S = 2;
+const AXIS_DEADZONE = 0.15;
 
 AFRAME.registerComponent('player-controller', {
     schema: {
@@ -24,11 +25,30 @@ AFRAME.registerComponent('player-controller', {
         this.questionPoolKey = '';
         this.totalQuestionsAnswered = 0;
         this.questionsForLevel = 0;
+        this.vrAxes = { x: 0, y: 0 };
 
         this.onKeyDown = (e) => { this.keys[e.code] = true; };
         this.onKeyUp = (e) => { this.keys[e.code] = false; };
         window.addEventListener('keydown', this.onKeyDown);
         window.addEventListener('keyup', this.onKeyUp);
+
+        this.onAxisMove = (e) => {
+            const axis = e.detail.axis || [];
+            this.vrAxes.x = Math.abs(axis[0] || 0) > AXIS_DEADZONE ? axis[0] : 0;
+            this.vrAxes.y = Math.abs(axis[1] || 0) > AXIS_DEADZONE ? axis[1] : 0;
+        };
+
+        this.onControllerDisconnected = () => {
+            this.vrAxes.x = 0;
+            this.vrAxes.y = 0;
+        };
+
+        ['leftHand', 'rightHand'].forEach(id => {
+            const hand = document.getElementById(id);
+            if (!hand) return;
+            hand.addEventListener('axismove', this.onAxisMove);
+            hand.addEventListener('controllerdisconnected', this.onControllerDisconnected);
+        });
 
         console.log('player-controller init');
 
@@ -92,6 +112,16 @@ AFRAME.registerComponent('player-controller', {
         if (this.keys['KeyD'] || this.keys['ArrowRight']) {
             dx += Math.cos(yaw) * speed;
             dz -= Math.sin(yaw) * speed;
+        }
+
+        if (this.vrAxes.y !== 0) {
+            const forward = -this.vrAxes.y;
+            dx -= Math.sin(yaw) * forward * speed;
+            dz -= Math.cos(yaw) * forward * speed;
+        }
+        if (this.vrAxes.x !== 0) {
+            dx += Math.cos(yaw) * this.vrAxes.x * speed;
+            dz -= Math.sin(yaw) * this.vrAxes.x * speed;
         }
 
         const nx = pos.x + dx;
@@ -189,5 +219,11 @@ AFRAME.registerComponent('player-controller', {
     remove() {
         window.removeEventListener('keydown', this.onKeyDown);
         window.removeEventListener('keyup', this.onKeyUp);
+        ['leftHand', 'rightHand'].forEach(id => {
+            const hand = document.getElementById(id);
+            if (!hand) return;
+            hand.removeEventListener('axismove', this.onAxisMove);
+            hand.removeEventListener('controllerdisconnected', this.onControllerDisconnected);
+        });
     },
 });
