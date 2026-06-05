@@ -1,6 +1,15 @@
 import { gradeNames, subjectNames } from './questions.js';
 import { levels } from './levels.js';
 
+const SUBJECTS = [
+    'matte',
+    'svenska',
+    'engelska',
+    'no',
+    'so',
+    'historia',
+];
+
 // =============================================
 // HUD
 // =============================================
@@ -209,11 +218,54 @@ export function showLevelComplete(levelIndex, subject, onNext) {
     document.getElementById('nextLevelBtn').textContent = isLast ? '🔄 Spela igen' : 'Nästa nivå →';
 
     lc.classList.add('open');
+    openVRLevelComplete(levelIndex, subject, onNext);
 
     document.getElementById('nextLevelBtn').addEventListener('click', () => {
         lc.classList.remove('open');
+        closeVRLevelComplete();
         onNext(isLast ? 0 : levelIndex + 1);
     }, { once: true });
+}
+
+function openVRLevelComplete(levelIndex, subject, onNext) {
+    const scene = document.querySelector('a-scene');
+    const camera = document.getElementById('cam');
+    if (!scene || !camera || !scene.is('vr-mode')) return;
+
+    closeVRLevelComplete();
+
+    const isLast = levelIndex >= levels.length - 1;
+    const panel = createVRPanel('vrLevelComplete', 2.5, 1.25, '0 -0.05 -2.2');
+
+    const title = createVRText(isLast ? 'Du klarade allt!' : 'Niva klar!', '0 0.38 0.03', '#ffdd00', 2.2, 28);
+    title.setAttribute('align', 'center');
+    panel.appendChild(title);
+
+    const message = createVRText(
+        isLast
+            ? `Imponerande! Du klarade ${subjectNames[subject]} pa alla nivaer.`
+            : 'Bra jobbat! Nasta labyrint ar storre med fler fragor.',
+        '0 0.08 0.03',
+        '#ffffff',
+        2.15,
+        34
+    );
+    message.setAttribute('align', 'center');
+    panel.appendChild(message);
+
+    const nextButton = createVRButton(isLast ? 'Spela igen' : 'Nasta niva', '0 -0.36 0.04', 1.6, 0.28);
+    nextButton.addEventListener('click', () => {
+        document.getElementById('levelComplete').classList.remove('open');
+        closeVRLevelComplete();
+        onNext(isLast ? 0 : levelIndex + 1);
+    }, { once: true });
+    panel.appendChild(nextButton);
+
+    camera.appendChild(panel);
+}
+
+function closeVRLevelComplete() {
+    removeElementById('vrLevelComplete');
 }
 
 // =============================================
@@ -225,11 +277,20 @@ export function initStartScreen(onStart) {
     const subjectChoice = document.getElementById('subjectChoice');
     const selectedGradeText = document.getElementById('selectedGradeText');
     const backToGradeBtn = document.getElementById('backToGradeBtn');
+    const scene = document.querySelector('a-scene');
+    let selectedVRGrade = null;
 
     function updateStartButton() {
         const ready = startBtn.dataset.grade && startBtn.dataset.subject;
         startBtn.disabled = !ready;
         startBtn.classList.toggle('ready', ready);
+    }
+
+    function startGame(grade, subject) {
+        if (!grade || !subject) return;
+        document.getElementById('startScreen').style.display = 'none';
+        closeVRStartScreen();
+        onStart(grade, subject);
     }
 
     document.querySelectorAll('.gradeBtn').forEach(btn => {
@@ -265,8 +326,122 @@ export function initStartScreen(onStart) {
 
     startBtn.addEventListener('click', () => {
         const { grade, subject } = startBtn.dataset;
-        if (!grade || !subject) return;
-        document.getElementById('startScreen').style.display = 'none';
-        onStart(grade, subject);
+        startGame(grade, subject);
     });
+
+    function showVRGradeChoice() {
+        if (!scene || !scene.is('vr-mode')) return;
+        if (document.getElementById('startScreen').style.display === 'none') return;
+
+        selectedVRGrade = null;
+        closeVRStartScreen();
+
+        const camera = document.getElementById('cam');
+        const panel = createVRPanel('vrStartScreen', 2.75, 2.25, '0 -0.05 -2.4');
+        panel.appendChild(createVRText('aMAZEing Minds', '0 0.88 0.03', '#90ee90', 2.4, 26));
+        panel.appendChild(createVRText('Valj arskurs', '0 0.62 0.03', '#ffffff', 2.2, 28));
+
+        for (let grade = 1; grade <= 9; grade++) {
+            const col = (grade - 1) % 3;
+            const row = Math.floor((grade - 1) / 3);
+            const x = -0.72 + col * 0.72;
+            const y = 0.28 - row * 0.34;
+            const button = createVRButton(String(grade), `${x} ${y} 0.04`, 0.5, 0.24);
+            button.addEventListener('click', () => {
+                selectedVRGrade = String(grade);
+                showVRSubjectChoice();
+            });
+            panel.appendChild(button);
+        }
+
+        camera.appendChild(panel);
+    }
+
+    function showVRSubjectChoice() {
+        if (!selectedVRGrade) return;
+        const camera = document.getElementById('cam');
+        closeVRStartScreen();
+
+        const panel = createVRPanel('vrStartScreen', 2.75, 2.25, '0 -0.05 -2.4');
+        panel.appendChild(createVRText(gradeNames[selectedVRGrade], '0 0.88 0.03', '#90ee90', 2.4, 26));
+        panel.appendChild(createVRText('Valj amne', '0 0.62 0.03', '#ffffff', 2.2, 28));
+
+        SUBJECTS.forEach((subject, index) => {
+            const col = index % 2;
+            const row = Math.floor(index / 2);
+            const x = -0.53 + col * 1.06;
+            const y = 0.25 - row * 0.35;
+            const button = createVRButton(subjectNames[subject], `${x} ${y} 0.04`, 0.9, 0.24);
+            button.addEventListener('click', () => {
+                startBtn.dataset.grade = selectedVRGrade;
+                startBtn.dataset.subject = subject;
+                startGame(selectedVRGrade, subject);
+            });
+            panel.appendChild(button);
+        });
+
+        const backButton = createVRButton('Tillbaka', '0 -0.84 0.04', 0.9, 0.24);
+        backButton.addEventListener('click', showVRGradeChoice);
+        panel.appendChild(backButton);
+
+        camera.appendChild(panel);
+    }
+
+    function closeVRStartScreen() {
+        removeElementById('vrStartScreen');
+    }
+
+    if (scene) {
+        scene.addEventListener('enter-vr', () => {
+            setTimeout(showVRGradeChoice, 0);
+        });
+        scene.addEventListener('exit-vr', closeVRStartScreen);
+    }
+}
+
+function createVRPanel(id, width, height, position) {
+    const panel = document.createElement('a-entity');
+    panel.id = id;
+    panel.setAttribute('position', position);
+
+    const background = document.createElement('a-plane');
+    background.setAttribute('width', String(width));
+    background.setAttribute('height', String(height));
+    background.setAttribute('material', 'color: #0d2a0d; opacity: 0.96; transparent: true; side: double');
+    panel.appendChild(background);
+
+    return panel;
+}
+
+function createVRButton(label, position, width, height) {
+    const button = document.createElement('a-plane');
+    button.classList.add('clickable');
+    button.setAttribute('width', String(width));
+    button.setAttribute('height', String(height));
+    button.setAttribute('position', position);
+    button.setAttribute('material', 'color: #155c9e; emissive: #0b3563; emissiveIntensity: 0.15');
+
+    const text = createVRText(label, '0 -0.035 0.02', '#ffffff', width * 1.8, 24);
+    text.setAttribute('align', 'center');
+    button.appendChild(text);
+
+    return button;
+}
+
+function createVRText(value, position, color, width, wrapCount) {
+    const text = document.createElement('a-text');
+    text.setAttribute('value', value);
+    text.setAttribute('align', 'center');
+    text.setAttribute('position', position);
+    text.setAttribute('color', color);
+    text.setAttribute('width', String(width));
+    text.setAttribute('wrap-count', String(wrapCount));
+    return text;
+}
+
+function removeElementById(id) {
+    const el = document.getElementById(id);
+    if (el && el.parentNode) {
+        el.parentNode.removeChild(el);
+    }
 }
