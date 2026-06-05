@@ -108,31 +108,36 @@ AFRAME.registerComponent('player-controller', {
 
         const rig = document.getElementById('rig');
         const pos = { ...rig.getAttribute('position') };
-        const movement = this.getMovementVector();
+        let dx = 0, dz = 0;
+        const keyboardYaw = this.getDesktopYaw();
         const speed = this.data.speed;
 
         if (this.keys['KeyW'] || this.keys['ArrowUp']) {
-            movement.forward += 1;
+            dx -= Math.sin(keyboardYaw) * speed;
+            dz -= Math.cos(keyboardYaw) * speed;
         }
         if (this.keys['KeyS'] || this.keys['ArrowDown']) {
-            movement.forward -= 1;
+            dx += Math.sin(keyboardYaw) * speed;
+            dz += Math.cos(keyboardYaw) * speed;
         }
         if (this.keys['KeyA'] || this.keys['ArrowLeft']) {
-            movement.right -= 1;
+            dx -= Math.cos(keyboardYaw) * speed;
+            dz += Math.sin(keyboardYaw) * speed;
         }
         if (this.keys['KeyD'] || this.keys['ArrowRight']) {
-            movement.right += 1;
+            dx += Math.cos(keyboardYaw) * speed;
+            dz -= Math.sin(keyboardYaw) * speed;
         }
 
         const gamepadAxes = this.getGamepadAxes();
         const vrX = gamepadAxes.x !== 0 ? gamepadAxes.x : this.vrAxes.x;
         const vrY = gamepadAxes.y !== 0 ? gamepadAxes.y : this.vrAxes.y;
 
-        movement.forward += vrY;
-        movement.right += -vrX;
-
-        const dx = (FORWARD.x * movement.forward + RIGHT.x * movement.right) * speed;
-        const dz = (FORWARD.z * movement.forward + RIGHT.z * movement.right) * speed;
+        if (vrX !== 0 || vrY !== 0) {
+            this.updateVrMovementVectors();
+            dx += (FORWARD.x * vrY + RIGHT.x * -vrX) * speed;
+            dz += (FORWARD.z * vrY + RIGHT.z * -vrX) * speed;
+        }
 
         const nx = pos.x + dx;
         const nz = pos.z + dz;
@@ -231,7 +236,7 @@ AFRAME.registerComponent('player-controller', {
         return { x: best.x, y: best.y };
     },
 
-    getMovementVector() {
+    updateVrMovementVectors() {
         const cam = document.getElementById('cam');
         cam.object3D.getWorldDirection(FORWARD);
         FORWARD.y = 0;
@@ -244,7 +249,6 @@ AFRAME.registerComponent('player-controller', {
         }
 
         RIGHT.copy(FORWARD).cross(WORLD_UP).normalize();
-        return { forward: 0, right: 0 };
     },
 
     getDesktopYaw() {
