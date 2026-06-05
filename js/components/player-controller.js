@@ -4,6 +4,9 @@ import { getQuestionPool } from '../questions.js';
 
 const S = 2;
 const AXIS_DEADZONE = 0.15;
+const FORWARD = new THREE.Vector3();
+const RIGHT = new THREE.Vector3();
+const WORLD_UP = new THREE.Vector3(0, 1, 0);
 
 AFRAME.registerComponent('player-controller', {
     schema: {
@@ -34,19 +37,27 @@ AFRAME.registerComponent('player-controller', {
 
         this.onAxisMove = (e) => {
             const axis = e.detail.axis || [];
-            this.vrAxes.x = Math.abs(axis[0] || 0) > AXIS_DEADZONE ? axis[0] : 0;
-            this.vrAxes.y = Math.abs(axis[1] || 0) > AXIS_DEADZONE ? axis[1] : 0;
+            this.setVrAxes(axis[0], axis[1]);
+        };
+
+        this.onThumbstickMove = (e) => {
+            this.setVrAxes(e.detail.x, e.detail.y);
+        };
+
+        this.onTrackpadMove = (e) => {
+            this.setVrAxes(e.detail.x, e.detail.y);
         };
 
         this.onControllerDisconnected = () => {
-            this.vrAxes.x = 0;
-            this.vrAxes.y = 0;
+            this.setVrAxes(0, 0);
         };
 
         ['leftHand', 'rightHand'].forEach(id => {
             const hand = document.getElementById(id);
             if (!hand) return;
             hand.addEventListener('axismove', this.onAxisMove);
+            hand.addEventListener('thumbstickmoved', this.onThumbstickMove);
+            hand.addEventListener('trackpadmoved', this.onTrackpadMove);
             hand.addEventListener('controllerdisconnected', this.onControllerDisconnected);
         });
 
@@ -93,36 +104,27 @@ AFRAME.registerComponent('player-controller', {
 
         const rig = document.getElementById('rig');
         const pos = { ...rig.getAttribute('position') };
-        let dx = 0, dz = 0;
-        const yaw = this.getYaw();
+        const movement = this.getMovementVector();
         const speed = this.data.speed;
 
         if (this.keys['KeyW'] || this.keys['ArrowUp']) {
-            dx -= Math.sin(yaw) * speed;
-            dz -= Math.cos(yaw) * speed;
+            movement.forward += 1;
         }
         if (this.keys['KeyS'] || this.keys['ArrowDown']) {
-            dx += Math.sin(yaw) * speed;
-            dz += Math.cos(yaw) * speed;
+            movement.forward -= 1;
         }
         if (this.keys['KeyA'] || this.keys['ArrowLeft']) {
-            dx -= Math.cos(yaw) * speed;
-            dz += Math.sin(yaw) * speed;
+            movement.right -= 1;
         }
         if (this.keys['KeyD'] || this.keys['ArrowRight']) {
-            dx += Math.cos(yaw) * speed;
-            dz -= Math.sin(yaw) * speed;
+            movement.right += 1;
         }
 
-        if (this.vrAxes.y !== 0) {
-            const forward = -this.vrAxes.y;
-            dx -= Math.sin(yaw) * forward * speed;
-            dz -= Math.cos(yaw) * forward * speed;
-        }
-        if (this.vrAxes.x !== 0) {
-            dx += Math.cos(yaw) * this.vrAxes.x * speed;
-            dz -= Math.sin(yaw) * this.vrAxes.x * speed;
-        }
+        movement.forward += -this.vrAxes.y;
+        movement.right += this.vrAxes.x;
+
+        const dx = (FORWARD.x * movement.forward + RIGHT.x * movement.right) * speed;
+        const dz = (FORWARD.z * movement.forward + RIGHT.z * movement.right) * speed;
 
         const nx = pos.x + dx;
         const nz = pos.z + dz;
@@ -193,7 +195,28 @@ AFRAME.registerComponent('player-controller', {
         });
     },
 
-    getYaw() {
+    setVrAxes(x = 0, y = 0) {
+        this.vrAxes.x = Math.abs(x) > AXIS_DEADZONE ? x : 0;
+        this.vrAxes.y = Math.abs(y) > AXIS_DEADZONE ? y : 0;
+    },
+
+    getMovementVector() {
+        const cam = document.getElementById('cam');
+        cam.object3D.getWorldDirection(FORWARD);
+        FORWARD.y = 0;
+
+        if (FORWARD.lengthSq() === 0) {
+            const yaw = this.getDesktopYaw();
+            FORWARD.set(-Math.sin(yaw), 0, -Math.cos(yaw));
+        } else {
+            FORWARD.normalize();
+        }
+
+        RIGHT.copy(FORWARD).cross(WORLD_UP).normalize();
+        return { forward: 0, right: 0 };
+    },
+
+    getDesktopYaw() {
         const cam = document.getElementById('cam');
         const lc = cam.components['look-controls'];
         if (lc && lc.yawObject) return lc.yawObject.rotation.y;
@@ -223,6 +246,8 @@ AFRAME.registerComponent('player-controller', {
             const hand = document.getElementById(id);
             if (!hand) return;
             hand.removeEventListener('axismove', this.onAxisMove);
+            hand.removeEventListener('thumbstickmoved', this.onThumbstickMove);
+            hand.removeEventListener('trackpadmoved', this.onTrackpadMove);
             hand.removeEventListener('controllerdisconnected', this.onControllerDisconnected);
         });
     },
