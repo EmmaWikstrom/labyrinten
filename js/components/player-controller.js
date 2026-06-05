@@ -128,8 +128,8 @@ AFRAME.registerComponent('player-controller', {
         const vrX = gamepadAxes.x !== 0 ? gamepadAxes.x : this.vrAxes.x;
         const vrY = gamepadAxes.y !== 0 ? gamepadAxes.y : this.vrAxes.y;
 
-        movement.forward += -vrY;
-        movement.right += vrX;
+        movement.forward += vrY;
+        movement.right += -vrX;
 
         const dx = (FORWARD.x * movement.forward + RIGHT.x * movement.right) * speed;
         const dz = (FORWARD.z * movement.forward + RIGHT.z * movement.right) * speed;
