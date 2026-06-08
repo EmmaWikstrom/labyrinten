@@ -149,7 +149,7 @@ function openVRModal(subject, grade, question, onAnswer) {
     questionText.setAttribute('position', '0 0.32 0.02');
     questionText.setAttribute('color', '#ffffff');
     questionText.setAttribute('width', String(contentWidth));
-    questionText.setAttribute('wrap-count', '28');
+    questionText.setAttribute('wrap-count', '34');
     panel.appendChild(questionText);
 
     const feedback = document.createElement('a-text');
@@ -208,7 +208,7 @@ function createVRAnswer(answer, index) {
     label.setAttribute('position', '0 -0.03 0.02');
     label.setAttribute('color', '#ffffff');
     label.setAttribute('width', '1.18');
-    label.setAttribute('wrap-count', '22');
+    label.setAttribute('wrap-count', '30');
     option.appendChild(label);
 
     return option;
