@@ -440,8 +440,9 @@ function createVRButton(label, position, width, height) {
     button.setAttribute('position', position);
     button.setAttribute('material', 'color: #155c9e; emissive: #0b3563; emissiveIntensity: 0.15');
 
-    const text = createVRText(label, '0 -0.035 0.02', '#ffffff', width * 1.8, 24);
+    const text = createVRText(label, '0 0 0.02', '#ffffff', width * 1.8, 24);
     text.setAttribute('align', 'center');
+    text.setAttribute('baseline', 'center');
     button.appendChild(text);
 
     return button;
