@@ -205,7 +205,8 @@ function createVRAnswer(answer, index) {
     applyVRFont(label);
     label.setAttribute('value', answer);
     label.setAttribute('align', 'center');
-    label.setAttribute('position', '0 -0.03 0.02');
+    label.setAttribute('baseline', 'center');
+    label.setAttribute('position', '0 0 0.02');
     label.setAttribute('color', '#ffffff');
     label.setAttribute('width', '1.18');
     label.setAttribute('wrap-count', '30');
