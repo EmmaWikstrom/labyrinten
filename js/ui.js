@@ -10,8 +10,8 @@ const SUBJECTS = [
     'historia',
 ];
 
-const VR_FONT = '/assets/fonts/inter/Inter-Regular.json';
-const VR_FONT_IMAGE = '/assets/fonts/inter/inter.png';
+const VR_FONT = '/fonts/inter/Inter-Regular.json';
+const VR_FONT_IMAGE = '/fonts/inter/inter.png';
 
 function applyVRFont(text) {
     text.setAttribute('font', VR_FONT);
