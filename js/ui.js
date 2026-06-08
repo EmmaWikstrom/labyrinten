@@ -16,6 +16,7 @@ const VR_FONT_IMAGE = '/assets/fonts/inter/inter.png';
 function applyVRFont(text) {
     text.setAttribute('font', VR_FONT);
     text.setAttribute('font-image', VR_FONT_IMAGE);
+    text.setAttribute('negate', 'false');
 }
 
 // =============================================
