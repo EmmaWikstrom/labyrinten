@@ -16,6 +16,7 @@ const VR_FONT_IMAGE = '/fonts/inter/inter.png';
 function applyVRFont(text) {
     text.setAttribute('font', VR_FONT);
     text.setAttribute('font-image', VR_FONT_IMAGE);
+    text.setAttribute('shader', 'msdf');
     text.setAttribute('negate', 'false');
 }
 
