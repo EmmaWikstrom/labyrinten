@@ -119,13 +119,17 @@ function openVRModal(subject, grade, question, onAnswer) {
 
     closeVRModal();
 
+    const modalWidth = 2.1;
+    const modalHeight = 1.7;
+    const contentWidth = 1.85;
+
     const panel = document.createElement('a-entity');
     panel.id = 'vrQuestionModal';
     panel.setAttribute('position', '0 -0.05 -2.3');
 
     const background = document.createElement('a-plane');
-    background.setAttribute('width', '2.6');
-    background.setAttribute('height', '2.1');
+    background.setAttribute('width', String(modalWidth));
+    background.setAttribute('height', String(modalHeight));
     background.setAttribute('material', 'color: #0d2a0d; opacity: 0.96; transparent: true; side: double');
     panel.appendChild(background);
 
@@ -133,28 +137,28 @@ function openVRModal(subject, grade, question, onAnswer) {
     applyVRFont(subjectLabel);
     subjectLabel.setAttribute('value', `${subjectNames[subject]} | ${gradeNames[grade]}`);
     subjectLabel.setAttribute('align', 'center');
-    subjectLabel.setAttribute('position', '0 0.85 0.02');
+    subjectLabel.setAttribute('position', '0 0.68 0.02');
     subjectLabel.setAttribute('color', '#90ee90');
-    subjectLabel.setAttribute('width', '2.3');
+    subjectLabel.setAttribute('width', String(contentWidth));
     panel.appendChild(subjectLabel);
 
     const questionText = document.createElement('a-text');
     applyVRFont(questionText);
     questionText.setAttribute('value', question.q);
     questionText.setAttribute('align', 'center');
-    questionText.setAttribute('position', '0 0.55 0.02');
+    questionText.setAttribute('position', '0 0.44 0.02');
     questionText.setAttribute('color', '#ffffff');
-    questionText.setAttribute('width', '2.3');
-    questionText.setAttribute('wrap-count', '34');
+    questionText.setAttribute('width', String(contentWidth));
+    questionText.setAttribute('wrap-count', '32');
     panel.appendChild(questionText);
 
     const feedback = document.createElement('a-text');
     applyVRFont(feedback);
     feedback.setAttribute('value', '');
     feedback.setAttribute('align', 'center');
-    feedback.setAttribute('position', '0 -0.86 0.03');
+    feedback.setAttribute('position', '0 -0.67 0.03');
     feedback.setAttribute('color', '#ffdd00');
-    feedback.setAttribute('width', '2.2');
+    feedback.setAttribute('width', String(contentWidth));
     panel.appendChild(feedback);
 
     let answered = false;
@@ -190,10 +194,10 @@ function openVRModal(subject, grade, question, onAnswer) {
 
 function createVRAnswer(answer, index) {
     const option = document.createElement('a-plane');
-    const y = 0.12 - index * 0.3;
+    const y = 0.08 - index * 0.24;
     option.classList.add('clickable');
-    option.setAttribute('width', '2.15');
-    option.setAttribute('height', '0.22');
+    option.setAttribute('width', '1.75');
+    option.setAttribute('height', '0.19');
     option.setAttribute('position', `0 ${y} 0.03`);
     option.setAttribute('material', 'color: #155c9e; emissive: #0b3563; emissiveIntensity: 0.15');
 
@@ -203,8 +207,8 @@ function createVRAnswer(answer, index) {
     label.setAttribute('align', 'center');
     label.setAttribute('position', '0 -0.035 0.02');
     label.setAttribute('color', '#ffffff');
-    label.setAttribute('width', '2');
-    label.setAttribute('wrap-count', '28');
+    label.setAttribute('width', '1.6');
+    label.setAttribute('wrap-count', '26');
     option.appendChild(label);
 
     return option;
