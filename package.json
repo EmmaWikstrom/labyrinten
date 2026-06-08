@@ -21,6 +21,7 @@
   },
   "homepage": "https://github.com/EmmaWikstrom/labyrinten#readme",
   "devDependencies": {
+    "msdf-bmfont-xml": "^2.8.0",
     "vite": "^8.0.16"
   }
 }

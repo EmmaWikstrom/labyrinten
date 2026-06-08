@@ -10,6 +10,8 @@ const SUBJECTS = [
     'historia',
 ];
 
+const VR_FONT = '/assets/fonts/inter/Inter-Regular.json';
+
 // =============================================
 // HUD
 // =============================================
@@ -120,6 +122,7 @@ function openVRModal(subject, grade, question, onAnswer) {
     panel.appendChild(background);
 
     const subjectLabel = document.createElement('a-text');
+    subjectLabel.setAttribute('font', VR_FONT);
     subjectLabel.setAttribute('value', `${subjectNames[subject]} | ${gradeNames[grade]}`);
     subjectLabel.setAttribute('align', 'center');
     subjectLabel.setAttribute('position', '0 0.85 0.02');
@@ -128,6 +131,7 @@ function openVRModal(subject, grade, question, onAnswer) {
     panel.appendChild(subjectLabel);
 
     const questionText = document.createElement('a-text');
+    questionText.setAttribute('font', VR_FONT);
     questionText.setAttribute('value', question.q);
     questionText.setAttribute('align', 'center');
     questionText.setAttribute('position', '0 0.55 0.02');
@@ -137,6 +141,7 @@ function openVRModal(subject, grade, question, onAnswer) {
     panel.appendChild(questionText);
 
     const feedback = document.createElement('a-text');
+    feedback.setAttribute('font', VR_FONT);
     feedback.setAttribute('value', '');
     feedback.setAttribute('align', 'center');
     feedback.setAttribute('position', '0 -0.86 0.03');
@@ -185,6 +190,7 @@ function createVRAnswer(answer, index) {
     option.setAttribute('material', 'color: #155c9e; emissive: #0b3563; emissiveIntensity: 0.15');
 
     const label = document.createElement('a-text');
+    label.setAttribute('font', VR_FONT);
     label.setAttribute('value', answer);
     label.setAttribute('align', 'center');
     label.setAttribute('position', '0 -0.035 0.02');
@@ -430,6 +436,7 @@ function createVRButton(label, position, width, height) {
 
 function createVRText(value, position, color, width, wrapCount) {
     const text = document.createElement('a-text');
+    text.setAttribute('font', VR_FONT);
     text.setAttribute('value', value);
     text.setAttribute('align', 'center');
     text.setAttribute('position', position);
