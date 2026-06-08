@@ -167,7 +167,7 @@ function openVRModal(subject, grade, question, onAnswer) {
             if (correct) {
                 answered = true;
                 option.setAttribute('material', 'color: #2f9e44; emissive: #1f7a34; emissiveIntensity: 0.25');
-                feedback.setAttribute('value', 'Ratt!');
+                feedback.setAttribute('value', 'Rätt!');
                 setTimeout(() => {
                     document.getElementById('modal').classList.remove('open');
                     closeVRModal();
@@ -175,7 +175,7 @@ function openVRModal(subject, grade, question, onAnswer) {
                 }, 650);
             } else {
                 option.setAttribute('material', 'color: #b02a37; emissive: #7a1018; emissiveIntensity: 0.25');
-                feedback.setAttribute('value', 'Fel - forsok igen!');
+                feedback.setAttribute('value', 'Fel - försök igen!');
                 setTimeout(() => {
                     option.setAttribute('material', 'color: #155c9e; emissive: #0b3563; emissiveIntensity: 0.15');
                     feedback.setAttribute('value', '');
@@ -251,14 +251,14 @@ function openVRLevelComplete(levelIndex, subject, onNext) {
     const isLast = levelIndex >= levels.length - 1;
     const panel = createVRPanel('vrLevelComplete', 2.5, 1.25, '0 -0.05 -2.2');
 
-    const title = createVRText(isLast ? 'Du klarade allt!' : 'Niva klar!', '0 0.38 0.03', '#ffdd00', 2.2, 28);
+    const title = createVRText(isLast ? 'Du klarade allt!' : 'Nivå klar!', '0 0.38 0.03', '#ffdd00', 2.2, 28);
     title.setAttribute('align', 'center');
     panel.appendChild(title);
 
     const message = createVRText(
         isLast
-            ? `Imponerande! Du klarade ${subjectNames[subject]} pa alla nivaer.`
-            : 'Bra jobbat! Nasta labyrint ar storre med fler fragor.',
+            ? `Imponerande! Du klarade ${subjectNames[subject]} på alla nivåer.`
+            : 'Bra jobbat! Nästa labyrint är större med fler frågor.',
         '0 0.08 0.03',
         '#ffffff',
         2.15,
@@ -267,7 +267,7 @@ function openVRLevelComplete(levelIndex, subject, onNext) {
     message.setAttribute('align', 'center');
     panel.appendChild(message);
 
-    const nextButton = createVRButton(isLast ? 'Spela igen' : 'Nasta niva', '0 -0.36 0.04', 1.6, 0.28);
+    const nextButton = createVRButton(isLast ? 'Spela igen' : 'Nästa nivå', '0 -0.36 0.04', 1.6, 0.28);
     nextButton.addEventListener('click', () => {
         document.getElementById('levelComplete').classList.remove('open');
         closeVRLevelComplete();
@@ -353,7 +353,7 @@ export function initStartScreen(onStart) {
         const camera = document.getElementById('cam');
         const panel = createVRPanel('vrStartScreen', 2.75, 2.25, '0 -0.05 -2.4');
         panel.appendChild(createVRText('aMAZEing Minds', '0 0.88 0.03', '#90ee90', 2.4, 26));
-        panel.appendChild(createVRText('Valj arskurs', '0 0.62 0.03', '#ffffff', 2.2, 28));
+        panel.appendChild(createVRText('Välj årskurs', '0 0.62 0.03', '#ffffff', 2.2, 28));
 
         for (let grade = 1; grade <= 9; grade++) {
             const col = (grade - 1) % 3;
@@ -378,7 +378,7 @@ export function initStartScreen(onStart) {
 
         const panel = createVRPanel('vrStartScreen', 2.75, 2.25, '0 -0.05 -2.4');
         panel.appendChild(createVRText(gradeNames[selectedVRGrade], '0 0.88 0.03', '#90ee90', 2.4, 26));
-        panel.appendChild(createVRText('Valj amne', '0 0.62 0.03', '#ffffff', 2.2, 28));
+        panel.appendChild(createVRText('Välj ämne', '0 0.62 0.03', '#ffffff', 2.2, 28));
 
         SUBJECTS.forEach((subject, index) => {
             const col = index % 2;
