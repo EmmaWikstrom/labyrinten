@@ -169,7 +169,7 @@ function openVRModal(subject, grade, question, onAnswer) {
     feedback.setAttribute('value', '');
     feedback.setAttribute('align', 'center');
     feedback.setAttribute('position', '0 -0.56 0.03');
-    feedback.setAttribute('color', '#aaddaa');
+    feedback.setAttribute('color', '#ffffff');
     feedback.setAttribute('width', String(contentWidth));
     panel.appendChild(feedback);
 
@@ -293,6 +293,8 @@ function openVRLevelComplete(levelIndex, subject, onNext) {
     const nextButton = createVRButton(isLast ? 'Spela igen' : 'Nästa nivå', '0 -0.36 0.04', 1.6, 0.28, {
         material: VR_PRIMARY_BUTTON_MATERIAL,
         borderColor: VR_ACCENT_BORDER_COLOR,
+        textColor: '#ffffff',
+        textY: 0.012,
     });
     nextButton.addEventListener('click', () => {
         document.getElementById('levelComplete').classList.remove('open');
@@ -477,7 +479,8 @@ function createVRButton(label, position, width, height, options = {}) {
         button.appendChild(border);
     }
 
-    const text = createVRText(label, `0 ${VR_BUTTON_TEXT_Y} 0.02`, options.textColor || '#ffffff', width * 1.8, 24);
+    const textY = options.textY ?? VR_BUTTON_TEXT_Y;
+    const text = createVRText(label, `0 ${textY} 0.02`, options.textColor || '#ffffff', width * 1.8, 24);
     text.setAttribute('align', 'center');
     text.setAttribute('baseline', 'center');
     button.appendChild(text);
