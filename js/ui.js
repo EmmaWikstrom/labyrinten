@@ -64,10 +64,11 @@ export function setExitLocked(locked) {
 // =============================================
 // MODAL
 // =============================================
-export function openModal(subject, grade, question, onAnswer) {
+export function openModal(subject, grade, question, onAnswer, progress = null) {
     document.getElementById('modalSubject').textContent = `${subjectNames[subject]} | ${gradeNames[grade]}`;
     document.getElementById('modalQuestion').textContent = question.q;
     document.getElementById('modalFeedback').textContent = '';
+    const correctFeedback = getCorrectFeedback(progress);
 
     const grid = document.getElementById('answerGrid');
     grid.innerHTML = '';
@@ -78,7 +79,7 @@ export function openModal(subject, grade, question, onAnswer) {
         btn.textContent = ans;
         btn.addEventListener('click', () => {
             const correct = i === question.correct;
-            handleAnswer(btn, correct, grid, () => {
+            handleAnswer(btn, correct, grid, correctFeedback, () => {
                 closeVRModal();
                 onAnswer(correct);
             });
@@ -87,20 +88,29 @@ export function openModal(subject, grade, question, onAnswer) {
     });
 
     document.getElementById('modal').classList.add('open');
-    openVRModal(subject, grade, question, onAnswer);
+    openVRModal(subject, grade, question, onAnswer, correctFeedback);
 }
 
-function handleAnswer(btn, correct, grid, callback) {
+function getCorrectFeedback(progress) {
+    if (!progress) return 'Rätt!';
+
+    const remaining = Math.max(progress.total - progress.answered - 1, 0);
+    if (remaining === 0) return 'Rätt! Alla frågor på nivån är besvarade.';
+    if (remaining === 1) return 'Rätt! 1 fråga kvar på nivån.';
+    return `Rätt! ${remaining} frågor kvar på nivån.`;
+}
+
+function handleAnswer(btn, correct, grid, correctFeedback, callback) {
     grid.querySelectorAll('.answerBtn').forEach(b => b.disabled = true);
     const fb = document.getElementById('modalFeedback');
 
     if (correct) {
         btn.classList.add('correct');
-        fb.textContent = '✅ Rätt!';
+        fb.textContent = `✅ ${correctFeedback}`;
         setTimeout(() => {
             document.getElementById('modal').classList.remove('open');
             callback();
-        }, 800);
+        }, 1200);
     } else {
         btn.classList.add('wrong');
         fb.textContent = '❌ Fel — försök igen!';
@@ -118,7 +128,7 @@ export function isModalOpen() {
     return document.getElementById('modal').classList.contains('open');
 }
 
-function openVRModal(subject, grade, question, onAnswer) {
+function openVRModal(subject, grade, question, onAnswer, correctFeedback) {
     const scene = document.querySelector('a-scene');
     const camera = document.getElementById('cam');
     if (!scene || !camera || !scene.is('vr-mode')) return;
@@ -172,6 +182,7 @@ function openVRModal(subject, grade, question, onAnswer) {
     feedback.setAttribute('position', '0 -0.56 0.03');
     feedback.setAttribute('color', '#ffffff');
     feedback.setAttribute('width', String(contentWidth));
+    feedback.setAttribute('wrap-count', '34');
     panel.appendChild(feedback);
 
     let answered = false;
@@ -184,12 +195,12 @@ function openVRModal(subject, grade, question, onAnswer) {
             if (correct) {
                 answered = true;
                 option.setAttribute('material', 'color: #2f9e44; emissive: #1f7a34; emissiveIntensity: 0.25');
-                feedback.setAttribute('value', 'Rätt!');
+                feedback.setAttribute('value', correctFeedback);
                 setTimeout(() => {
                     document.getElementById('modal').classList.remove('open');
                     closeVRModal();
                     onAnswer(true);
-                }, 650);
+                }, 1200);
             } else {
                 option.setAttribute('material', 'color: #b02a37; emissive: #7a1018; emissiveIntensity: 0.25');
                 feedback.setAttribute('value', 'Fel - försök igen!');

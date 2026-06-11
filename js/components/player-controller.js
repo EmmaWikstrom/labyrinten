@@ -177,18 +177,27 @@ AFRAME.registerComponent('player-controller', {
         if (this.totalQuestionsAnswered >= this.questionsForLevel) return;
 
         const q = this.getQuestion();
-        openModal(this.data.subject, this.data.grade, q, (correct) => {
-            if (correct) {
-                this.totalQuestionsAnswered++;
-                updateHUD(this.levelIndex, this.totalQuestionsAnswered, this.questionsForLevel);
-                this.triggersAnswered.add(index);
-                this.hideDisc(index);
-                if (this.totalQuestionsAnswered >= this.questionsForLevel) {
-                    setExitLocked(false);
-                    setHUDMessage('Hitta den gula porten! 🚪');
+        openModal(
+            this.data.subject,
+            this.data.grade,
+            q,
+            (correct) => {
+                if (correct) {
+                    this.totalQuestionsAnswered++;
+                    updateHUD(this.levelIndex, this.totalQuestionsAnswered, this.questionsForLevel);
+                    this.triggersAnswered.add(index);
+                    this.hideDisc(index);
+                    if (this.totalQuestionsAnswered >= this.questionsForLevel) {
+                        setExitLocked(false);
+                        setHUDMessage('Hitta den gula porten! 🚪');
+                    }
                 }
+            },
+            {
+                answered: this.totalQuestionsAnswered,
+                total: this.questionsForLevel,
             }
-        });
+        );
     },
 
     getQuestion() {
