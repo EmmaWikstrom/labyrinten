@@ -120,7 +120,7 @@ function openVRModal(subject, grade, question, onAnswer) {
     closeVRModal();
 
     const modalWidth = 1.55;
-    const modalHeight = 1.26;
+    const modalHeight = 1.38;
     const contentWidth = 1.38;
 
     const panel = document.createElement('a-entity');
@@ -156,7 +156,7 @@ function openVRModal(subject, grade, question, onAnswer) {
     applyVRFont(feedback);
     feedback.setAttribute('value', '');
     feedback.setAttribute('align', 'center');
-    feedback.setAttribute('position', '0 -0.49 0.03');
+    feedback.setAttribute('position', '0 -0.56 0.03');
     feedback.setAttribute('color', '#ffdd00');
     feedback.setAttribute('width', String(contentWidth));
     panel.appendChild(feedback);
@@ -181,7 +181,7 @@ function openVRModal(subject, grade, question, onAnswer) {
                 option.setAttribute('material', 'color: #b02a37; emissive: #7a1018; emissiveIntensity: 0.25');
                 feedback.setAttribute('value', 'Fel - försök igen!');
                 setTimeout(() => {
-                    option.setAttribute('material', 'color: #155c9e; emissive: #0b3563; emissiveIntensity: 0.15');
+                    option.setAttribute('material', 'color: #145c2a; emissive: #0d3f1d; emissiveIntensity: 0.15');
                     feedback.setAttribute('value', '');
                 }, 900);
             }
@@ -194,12 +194,16 @@ function openVRModal(subject, grade, question, onAnswer) {
 
 function createVRAnswer(answer, index) {
     const option = document.createElement('a-plane');
-    const y = 0.04 - index * 0.18;
+    const col = index % 2;
+    const row = Math.floor(index / 2);
+    const x = col === 0 ? -0.34 : 0.34;
+    const y = -0.1 - row * 0.2;
+
     option.classList.add('clickable');
-    option.setAttribute('width', '1.3');
-    option.setAttribute('height', '0.145');
-    option.setAttribute('position', `0 ${y} 0.03`);
-    option.setAttribute('material', 'color: #155c9e; emissive: #0b3563; emissiveIntensity: 0.15');
+    option.setAttribute('width', '0.62');
+    option.setAttribute('height', '0.16');
+    option.setAttribute('position', `${x} ${y} 0.03`);
+    option.setAttribute('material', 'color: #145c2a; emissive: #0d3f1d; emissiveIntensity: 0.15');
 
     const label = document.createElement('a-text');
     applyVRFont(label);
@@ -208,8 +212,8 @@ function createVRAnswer(answer, index) {
     label.setAttribute('baseline', 'center');
     label.setAttribute('position', '0 0 0.02');
     label.setAttribute('color', '#ffffff');
-    label.setAttribute('width', '1.18');
-    label.setAttribute('wrap-count', '26');
+    label.setAttribute('width', '0.56');
+    label.setAttribute('wrap-count', '16');
     option.appendChild(label);
 
     return option;
@@ -438,7 +442,7 @@ function createVRButton(label, position, width, height) {
     button.setAttribute('width', String(width));
     button.setAttribute('height', String(height));
     button.setAttribute('position', position);
-    button.setAttribute('material', 'color: #155c9e; emissive: #0b3563; emissiveIntensity: 0.15');
+    button.setAttribute('material', 'color: #145c2a; emissive: #0d3f1d; emissiveIntensity: 0.15');
 
     const text = createVRText(label, '0 0 0.02', '#ffffff', width * 1.8, 24);
     text.setAttribute('align', 'center');
