@@ -1,20 +1,23 @@
-# aMAZEing Minds
+# aMAZEing minds
 
-aMAZEing Minds is a web-based quiz game where the player chooses their grade level and school subject, walks through a 3D maze, and answers questions to unlock the exit. It is built to work both as a 2D web experience and as an immersive experience for VR headsets. The game is built with A-Frame and runs with Vite.
+aMAZEing Minds is a 3D quiz maze game where players choose a grade level and school subject, explore a maze, and answer questions to unlock the exit. The game works both in a standard 2D web browser and in VR headsets, built with A-Frame and Vite.
+
+---
 
 ## Features
 
-- 3D maze in the browser
-- Designed for both 2D web platforms and VR headsets
-- Grade and subject selection before starting the game
-- Options for Math, Swedish, English, Natural and Social Science subjects
-- Questions that appear when the player walks over marked spots
-- Multiple levels with increasing maze size
-- Locked exit that opens when all questions on the level have been answered
+- 3D maze gameplay with question-based progression
+- Locked exit that opens after all questions are answered
+- Grade and subject selection (Math, Swedish, English, Natural Science, Social Science, History)
+- Dynamic question triggers placed throughout the maze
+- Multiple levels with increasing difficulty
+- Works in both desktop web and VR (A-Frame)
+
+---
 
 ## Getting Started
 
-Install dependencies:
+IInstall dependencies:
 
 ```bash
 npm install
@@ -26,35 +29,74 @@ Start the development server:
 npm run dev
 ```
 
-Then open the address shown by Vite in the terminal, usually:
+Then open the URL shown in the terminal (usually):
 
-```text
 http://localhost:5173
-```
 
-## How to Play
+---
 
-1. Choose your grade level and subject on the start screen.
-2. Click `Starta spelet`.
-3. Use `WASD` or the arrow keys to move.
-4. Use the mouse to look around.
-5. Walk over the yellow markers and answer questions.
-6. When all questions are complete, find the yellow exit.
+## How to Play (Web)
+
+- Choose your grade level and subject on the start screen
+- Click “Starta spelet”
+- Move using WASD or arrow keys
+- Look around using the mouse
+- Walk over markers to trigger questions
+- Answer questions to progress
+- Unlock the exit when all questions are completed
+- Find the exit to complete the level
+
+---
+
+## How to Play (VR)
+
+- Choose your grade level and subject on the start screen
+- Click “Starta spelet”
+- Use your headset to look around
+- Interact with objects using VR controls (controller or gaze depending on device)
+- Walk over markers to trigger questions
+- Answer questions to progress
+- Unlock the exit when all questions are completed
+- Find the exit to complete the level --
 
 ## Edit Content
 
-- Questions and answers are in `js/questions.js`.
-- Mazes, start positions, exits, and question spots are in `js/levels.js`.
-- Player movement and question logic are in `js/components/player-controller.js`.
-- The 3D maze building logic is in `js/components/maze-builder.js`.
+### Questions
 
-## Next Steps
+Questions and answers are stored in:
 
-- Add the possibility to study for specific tests or exams.
-- Let players choose question sets connected to a specific course, chapter, or learning goal.
-- Add progress tracking so players can see what they have practiced and what they need to repeat.
-- Add a leaderboard for scores and completion times.
-- Add the possibility to play together with classmates.
+js/questions.js
+
+### Levels
+
+Maze layouts, start positions, exits, and question triggers are defined in:
+
+js/levels.js
+
+### Player Logic
+
+Movement and question interaction logic:
+
+js/components/player-controller.js
+
+### Maze Generation
+
+3D maze construction logic:
+
+js/components/maze-builder.js
+
+---
+
+## Possible implementations
+
+- Let students practice specific topics or exams instead of random questions
+- Allow teachers to create and upload their own question sets
+- Show player progress across levels and subjects (what has been completed and practiced)
+- Add a leaderboard based on completion time and performance
+- Add multiplayer mode where classmates can play and answer questions together
+- Generate questions from study material (text or images) to support custom practice
+
+---
 
 ## Build for Production
 
