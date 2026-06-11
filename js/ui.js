@@ -12,6 +12,9 @@ const SUBJECTS = [
 
 const VR_FONT = '/fonts/inter/Inter-Regular.json';
 const VR_FONT_IMAGE = '/fonts/inter/inter.png';
+const VR_BUTTON_MATERIAL = 'color: #145c2a; emissive: #0d3f1d; emissiveIntensity: 0.15';
+const VR_PRIMARY_BUTTON_MATERIAL = 'color: #ffcc00; emissive: #cc9900; emissiveIntensity: 0.2';
+const VR_BUTTON_TEXT_Y = -0.018;
 
 function applyVRFont(text) {
     text.setAttribute('font', VR_FONT);
@@ -157,7 +160,7 @@ function openVRModal(subject, grade, question, onAnswer) {
     feedback.setAttribute('value', '');
     feedback.setAttribute('align', 'center');
     feedback.setAttribute('position', '0 -0.56 0.03');
-    feedback.setAttribute('color', '#ffdd00');
+    feedback.setAttribute('color', '#aaddaa');
     feedback.setAttribute('width', String(contentWidth));
     panel.appendChild(feedback);
 
@@ -181,7 +184,7 @@ function openVRModal(subject, grade, question, onAnswer) {
                 option.setAttribute('material', 'color: #b02a37; emissive: #7a1018; emissiveIntensity: 0.25');
                 feedback.setAttribute('value', 'Fel - försök igen!');
                 setTimeout(() => {
-                    option.setAttribute('material', 'color: #145c2a; emissive: #0d3f1d; emissiveIntensity: 0.15');
+                    option.setAttribute('material', VR_BUTTON_MATERIAL);
                     feedback.setAttribute('value', '');
                 }, 900);
             }
@@ -203,14 +206,14 @@ function createVRAnswer(answer, index) {
     option.setAttribute('width', '0.62');
     option.setAttribute('height', '0.16');
     option.setAttribute('position', `${x} ${y} 0.03`);
-    option.setAttribute('material', 'color: #145c2a; emissive: #0d3f1d; emissiveIntensity: 0.15');
+    option.setAttribute('material', VR_BUTTON_MATERIAL);
 
     const label = document.createElement('a-text');
     applyVRFont(label);
     label.setAttribute('value', answer);
     label.setAttribute('align', 'center');
     label.setAttribute('baseline', 'center');
-    label.setAttribute('position', '0 0 0.02');
+    label.setAttribute('position', `0 ${VR_BUTTON_TEXT_Y} 0.02`);
     label.setAttribute('color', '#ffffff');
     label.setAttribute('width', '0.56');
     label.setAttribute('wrap-count', '16');
@@ -269,14 +272,17 @@ function openVRLevelComplete(levelIndex, subject, onNext) {
             ? `Imponerande! Du klarade ${subjectNames[subject]} på alla nivåer.`
             : 'Bra jobbat! Nästa labyrint är större med fler frågor.',
         '0 0.08 0.03',
-        '#ffffff',
+        '#b0d0b0',
         2.15,
         34
     );
     message.setAttribute('align', 'center');
     panel.appendChild(message);
 
-    const nextButton = createVRButton(isLast ? 'Spela igen' : 'Nästa nivå', '0 -0.36 0.04', 1.6, 0.28);
+    const nextButton = createVRButton(isLast ? 'Spela igen' : 'Nästa nivå', '0 -0.36 0.04', 1.6, 0.28, {
+        material: VR_PRIMARY_BUTTON_MATERIAL,
+        textColor: '#1a3a1a',
+    });
     nextButton.addEventListener('click', () => {
         document.getElementById('levelComplete').classList.remove('open');
         closeVRLevelComplete();
@@ -362,7 +368,7 @@ export function initStartScreen(onStart) {
         const camera = document.getElementById('cam');
         const panel = createVRPanel('vrStartScreen', 2.75, 2.25, '0 -0.05 -2.4');
         panel.appendChild(createVRText('aMAZEing Minds', '0 0.88 0.03', '#90ee90', 2.4, 26));
-        panel.appendChild(createVRText('Välj årskurs', '0 0.62 0.03', '#ffffff', 2.2, 28));
+        panel.appendChild(createVRText('Välj årskurs', '0 0.62 0.03', '#ffcc00', 2.2, 28));
 
         for (let grade = 1; grade <= 9; grade++) {
             const col = (grade - 1) % 3;
@@ -387,7 +393,7 @@ export function initStartScreen(onStart) {
 
         const panel = createVRPanel('vrStartScreen', 2.75, 2.25, '0 -0.05 -2.4');
         panel.appendChild(createVRText(gradeNames[selectedVRGrade], '0 0.88 0.03', '#90ee90', 2.4, 26));
-        panel.appendChild(createVRText('Välj ämne', '0 0.62 0.03', '#ffffff', 2.2, 28));
+        panel.appendChild(createVRText('Välj ämne', '0 0.62 0.03', '#ffcc00', 2.2, 28));
 
         SUBJECTS.forEach((subject, index) => {
             const col = index % 2;
@@ -436,15 +442,15 @@ function createVRPanel(id, width, height, position) {
     return panel;
 }
 
-function createVRButton(label, position, width, height) {
+function createVRButton(label, position, width, height, options = {}) {
     const button = document.createElement('a-plane');
     button.classList.add('clickable');
     button.setAttribute('width', String(width));
     button.setAttribute('height', String(height));
     button.setAttribute('position', position);
-    button.setAttribute('material', 'color: #145c2a; emissive: #0d3f1d; emissiveIntensity: 0.15');
+    button.setAttribute('material', options.material || VR_BUTTON_MATERIAL);
 
-    const text = createVRText(label, '0 0 0.02', '#ffffff', width * 1.8, 24);
+    const text = createVRText(label, `0 ${VR_BUTTON_TEXT_Y} 0.02`, options.textColor || '#ffffff', width * 1.8, 24);
     text.setAttribute('align', 'center');
     text.setAttribute('baseline', 'center');
     button.appendChild(text);
