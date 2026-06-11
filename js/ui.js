@@ -17,7 +17,7 @@ const VR_PRIMARY_BUTTON_MATERIAL = VR_BUTTON_MATERIAL;
 const VR_PANEL_BORDER_COLOR = '#4a9a4a';
 const VR_ACCENT_BORDER_COLOR = '#ffcc00';
 const VR_BUTTON_TEXT_Y = 0;
-const VR_WORD_BUTTON_TEXT_Y = -0.018;
+const VR_WORD_BUTTON_TEXT_Y = -0.035;
 
 function applyVRFont(text) {
     text.setAttribute('font', VR_FONT);
