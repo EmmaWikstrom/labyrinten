@@ -2,7 +2,7 @@ import { cellX, cellZ } from './maze-builder.js';
 import { isModalOpen, setExitLocked, showLevelComplete, setHUDMessage, updateHUD, openModal } from '../ui.js';
 import { getQuestionPool } from '../questions.js';
 
-const S = 2;
+const S = 2.6;
 const AXIS_DEADZONE = 0.15;
 const FORWARD = new THREE.Vector3();
 const RIGHT = new THREE.Vector3();
