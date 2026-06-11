@@ -95,7 +95,7 @@ function getCorrectFeedback(progress) {
     if (!progress) return 'Rätt!';
 
     const remaining = Math.max(progress.total - progress.answered - 1, 0);
-    if (remaining === 0) return 'Rätt! Alla frågor på nivån är besvarade.';
+    if (remaining === 0) return 'Rätt! Hitta utgången.';
     if (remaining === 1) return 'Rätt! 1 fråga kvar på nivån.';
     return `Rätt! ${remaining} frågor kvar på nivån.`;
 }
