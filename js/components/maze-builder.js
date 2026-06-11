@@ -1,6 +1,6 @@
 import { levels } from '../levels.js';
 
-const S = 2;
+const S = 2.6;
 const HEDGE_H = 2.2;
 
 export function cellX(col, COLS) {

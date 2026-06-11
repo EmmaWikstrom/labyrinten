@@ -2,7 +2,15 @@ import { cellX, cellZ } from './maze-builder.js';
 import { isModalOpen, setExitLocked, showLevelComplete, setHUDMessage, updateHUD, openModal } from '../ui.js';
 import { getQuestionPool } from '../questions.js';
 
-const S = 2;
+const S = 2.6;
+const AXIS_DEADZONE = 0.15;
+const FORWARD = new THREE.Vector3();
+const RIGHT = new THREE.Vector3();
+const WORLD_UP = new THREE.Vector3(0, 1, 0);
+const GAMEPAD_AXIS_PAIRS = [
+    [2, 3],
+    [0, 1],
+];
 
 AFRAME.registerComponent('player-controller', {
     schema: {
@@ -24,11 +32,38 @@ AFRAME.registerComponent('player-controller', {
         this.questionPoolKey = '';
         this.totalQuestionsAnswered = 0;
         this.questionsForLevel = 0;
+        this.vrAxes = { x: 0, y: 0 };
 
         this.onKeyDown = (e) => { this.keys[e.code] = true; };
         this.onKeyUp = (e) => { this.keys[e.code] = false; };
         window.addEventListener('keydown', this.onKeyDown);
         window.addEventListener('keyup', this.onKeyUp);
+
+        this.onAxisMove = (e) => {
+            const axis = e.detail.axis || [];
+            this.setVrAxes(axis[0], axis[1]);
+        };
+
+        this.onThumbstickMove = (e) => {
+            this.setVrAxes(e.detail.x, e.detail.y);
+        };
+
+        this.onTrackpadMove = (e) => {
+            this.setVrAxes(e.detail.x, e.detail.y);
+        };
+
+        this.onControllerDisconnected = () => {
+            this.setVrAxes(0, 0);
+        };
+
+        ['leftHand', 'rightHand'].forEach(id => {
+            const hand = document.getElementById(id);
+            if (!hand) return;
+            hand.addEventListener('axismove', this.onAxisMove);
+            hand.addEventListener('thumbstickmoved', this.onThumbstickMove);
+            hand.addEventListener('trackpadmoved', this.onTrackpadMove);
+            hand.addEventListener('controllerdisconnected', this.onControllerDisconnected);
+        });
 
         console.log('player-controller init');
 
@@ -74,24 +109,34 @@ AFRAME.registerComponent('player-controller', {
         const rig = document.getElementById('rig');
         const pos = { ...rig.getAttribute('position') };
         let dx = 0, dz = 0;
-        const yaw = this.getYaw();
+        const keyboardYaw = this.getDesktopYaw();
         const speed = this.data.speed;
 
         if (this.keys['KeyW'] || this.keys['ArrowUp']) {
-            dx -= Math.sin(yaw) * speed;
-            dz -= Math.cos(yaw) * speed;
+            dx -= Math.sin(keyboardYaw) * speed;
+            dz -= Math.cos(keyboardYaw) * speed;
         }
         if (this.keys['KeyS'] || this.keys['ArrowDown']) {
-            dx += Math.sin(yaw) * speed;
-            dz += Math.cos(yaw) * speed;
+            dx += Math.sin(keyboardYaw) * speed;
+            dz += Math.cos(keyboardYaw) * speed;
         }
         if (this.keys['KeyA'] || this.keys['ArrowLeft']) {
-            dx -= Math.cos(yaw) * speed;
-            dz += Math.sin(yaw) * speed;
+            dx -= Math.cos(keyboardYaw) * speed;
+            dz += Math.sin(keyboardYaw) * speed;
         }
         if (this.keys['KeyD'] || this.keys['ArrowRight']) {
-            dx += Math.cos(yaw) * speed;
-            dz -= Math.sin(yaw) * speed;
+            dx += Math.cos(keyboardYaw) * speed;
+            dz -= Math.sin(keyboardYaw) * speed;
+        }
+
+        const gamepadAxes = this.getGamepadAxes();
+        const vrX = gamepadAxes.x !== 0 ? gamepadAxes.x : this.vrAxes.x;
+        const vrY = gamepadAxes.y !== 0 ? gamepadAxes.y : this.vrAxes.y;
+
+        if (vrX !== 0 || vrY !== 0) {
+            this.updateVrMovementVectors();
+            dx += (FORWARD.x * vrY + RIGHT.x * -vrX) * speed;
+            dz += (FORWARD.z * vrY + RIGHT.z * -vrX) * speed;
         }
 
         const nx = pos.x + dx;
@@ -132,18 +177,27 @@ AFRAME.registerComponent('player-controller', {
         if (this.totalQuestionsAnswered >= this.questionsForLevel) return;
 
         const q = this.getQuestion();
-        openModal(this.data.subject, this.data.grade, q, (correct) => {
-            if (correct) {
-                this.totalQuestionsAnswered++;
-                updateHUD(this.levelIndex, this.totalQuestionsAnswered, this.questionsForLevel);
-                this.triggersAnswered.add(index);
-                this.hideDisc(index);
-                if (this.totalQuestionsAnswered >= this.questionsForLevel) {
-                    setExitLocked(false);
-                    setHUDMessage('Hitta den gula porten! 🚪');
+        openModal(
+            this.data.subject,
+            this.data.grade,
+            q,
+            (correct) => {
+                if (correct) {
+                    this.totalQuestionsAnswered++;
+                    updateHUD(this.levelIndex, this.totalQuestionsAnswered, this.questionsForLevel);
+                    this.triggersAnswered.add(index);
+                    this.hideDisc(index);
+                    if (this.totalQuestionsAnswered >= this.questionsForLevel) {
+                        setExitLocked(false);
+                        setHUDMessage('Hitta den gula porten! 🚪');
+                    }
                 }
+            },
+            {
+                answered: this.totalQuestionsAnswered,
+                total: this.questionsForLevel,
             }
-        });
+        );
     },
 
     getQuestion() {
@@ -163,7 +217,50 @@ AFRAME.registerComponent('player-controller', {
         });
     },
 
-    getYaw() {
+    setVrAxes(x = 0, y = 0) {
+        this.vrAxes.x = Math.abs(x) > AXIS_DEADZONE ? x : 0;
+        this.vrAxes.y = Math.abs(y) > AXIS_DEADZONE ? y : 0;
+    },
+
+    getGamepadAxes() {
+        if (!navigator.getGamepads) return { x: 0, y: 0 };
+
+        let best = { x: 0, y: 0, strength: 0 };
+        navigator.getGamepads().forEach(gamepad => {
+            if (!gamepad) return;
+
+            GAMEPAD_AXIS_PAIRS.forEach(([xIndex, yIndex]) => {
+                const x = gamepad.axes[xIndex] || 0;
+                const y = gamepad.axes[yIndex] || 0;
+                const filteredX = Math.abs(x) > AXIS_DEADZONE ? x : 0;
+                const filteredY = Math.abs(y) > AXIS_DEADZONE ? y : 0;
+                const strength = Math.abs(filteredX) + Math.abs(filteredY);
+
+                if (strength > best.strength) {
+                    best = { x: filteredX, y: filteredY, strength };
+                }
+            });
+        });
+
+        return { x: best.x, y: best.y };
+    },
+
+    updateVrMovementVectors() {
+        const cam = document.getElementById('cam');
+        cam.object3D.getWorldDirection(FORWARD);
+        FORWARD.y = 0;
+
+        if (FORWARD.lengthSq() === 0) {
+            const yaw = this.getDesktopYaw();
+            FORWARD.set(-Math.sin(yaw), 0, -Math.cos(yaw));
+        } else {
+            FORWARD.normalize();
+        }
+
+        RIGHT.copy(FORWARD).cross(WORLD_UP).normalize();
+    },
+
+    getDesktopYaw() {
         const cam = document.getElementById('cam');
         const lc = cam.components['look-controls'];
         if (lc && lc.yawObject) return lc.yawObject.rotation.y;
@@ -189,5 +286,13 @@ AFRAME.registerComponent('player-controller', {
     remove() {
         window.removeEventListener('keydown', this.onKeyDown);
         window.removeEventListener('keyup', this.onKeyUp);
+        ['leftHand', 'rightHand'].forEach(id => {
+            const hand = document.getElementById(id);
+            if (!hand) return;
+            hand.removeEventListener('axismove', this.onAxisMove);
+            hand.removeEventListener('thumbstickmoved', this.onThumbstickMove);
+            hand.removeEventListener('trackpadmoved', this.onTrackpadMove);
+            hand.removeEventListener('controllerdisconnected', this.onControllerDisconnected);
+        });
     },
 });
