@@ -1,106 +1,156 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="sv">
-
-<head>
-    <meta charset="UTF-8">
-    <title>aMAZEing Minds</title>
+  <head>
+    <meta charset="UTF-8" />
+    <title>aMAZEing minds</title>
     <script src="https://unpkg.com/aframe@1.5.0/dist/aframe-master.min.js"></script>
     <script type="module" src="/js/main.js"></script>
-    <link rel="stylesheet" href="/css/styles.css">
-</head>
+    <link rel="stylesheet" href="/css/styles.css" />
+  </head>
 
-<body>
-
+  <body>
     <div id="startScreen">
-        <div class="startModal" id="gradeChoice">
-            <h1>aMAZEing minds</h1>
-            <p>Välj din årskurs så får du frågor som passar dig.</p>
+      <div class="startModal" id="gradeChoice">
+        <h1>aMAZEing minds</h1>
+        <p>Välj din årskurs så får du frågor som passar dig.</p>
 
-            <h2>Årskurs</h2>
-            <div class="gradeGrid">
-                <button class="gradeBtn" data-grade="1">1</button>
-                <button class="gradeBtn" data-grade="2">2</button>
-                <button class="gradeBtn" data-grade="3">3</button>
-                <button class="gradeBtn" data-grade="4">4</button>
-                <button class="gradeBtn" data-grade="5">5</button>
-                <button class="gradeBtn" data-grade="6">6</button>
-                <button class="gradeBtn" data-grade="7">7</button>
-                <button class="gradeBtn" data-grade="8">8</button>
-                <button class="gradeBtn" data-grade="9">9</button>
-            </div>
+        <h2>Årskurs</h2>
+        <div class="gradeGrid">
+          <button class="gradeBtn" data-grade="1">1</button>
+          <button class="gradeBtn" data-grade="2">2</button>
+          <button class="gradeBtn" data-grade="3">3</button>
+          <button class="gradeBtn" data-grade="4">4</button>
+          <button class="gradeBtn" data-grade="5">5</button>
+          <button class="gradeBtn" data-grade="6">6</button>
+          <button class="gradeBtn" data-grade="7">7</button>
+          <button class="gradeBtn" data-grade="8">8</button>
+          <button class="gradeBtn" data-grade="9">9</button>
+        </div>
+      </div>
+
+      <div class="startModal hidden" id="subjectChoice">
+        <h1>aMAZEing minds</h1>
+        <p id="selectedGradeText"></p>
+
+        <h2>Ämne</h2>
+        <div class="subjectGrid">
+          <button class="subjectBtn" data-subject="matte">Matematik</button>
+          <button class="subjectBtn" data-subject="svenska">Svenska</button>
+          <button class="subjectBtn" data-subject="engelska">Engelska</button>
+          <button class="subjectBtn" data-subject="no">NO</button>
+          <button class="subjectBtn" data-subject="so">Geografi</button>
+          <button class="subjectBtn" data-subject="historia">Historia</button>
         </div>
 
-        <div class="startModal hidden" id="subjectChoice">
-            <h1>aMAZEing minds</h1>
-            <p id="selectedGradeText"></p>
-
-            <h2>Ämne</h2>
-            <div class="subjectGrid">
-                <button class="subjectBtn" data-subject="matte">Matematik</button>
-                <button class="subjectBtn" data-subject="svenska">Svenska</button>
-                <button class="subjectBtn" data-subject="engelska">Engelska</button>
-                <button class="subjectBtn" data-subject="no">NO</button>
-                <button class="subjectBtn" data-subject="so">Geografi</button>
-                <button class="subjectBtn" data-subject="historia">Historia</button>
-            </div>
-
-            <div class="startActions">
-                <button id="startBtn" disabled>Starta spelet</button>
-                <button class="secondaryBtn" id="backToGradeBtn">Tillbaka</button>
-            </div>
+        <div class="startActions">
+          <button id="startBtn" disabled>Starta spelet</button>
+          <button class="secondaryBtn" id="backToGradeBtn">Tillbaka</button>
         </div>
+      </div>
     </div>
 
     <div id="modal">
-        <div class="modalBox">
-            <div class="subject-tag" id="modalSubject"></div>
-            <h2 id="modalQuestion"></h2>
-            <div class="answerGrid" id="answerGrid"></div>
-            <div id="modalFeedback"></div>
-        </div>
+      <div class="modalBox">
+        <div class="subject-tag" id="modalSubject"></div>
+        <h2 id="modalQuestion"></h2>
+        <div class="answerGrid" id="answerGrid"></div>
+        <div id="modalFeedback"></div>
+      </div>
     </div>
 
     <div id="levelComplete">
-        <div class="lcBox">
-            <h2 id="lcTitle">🎉 Nivå klar!</h2>
-            <p id="lcText"></p>
-            <button id="nextLevelBtn">Nästa nivå →</button>
-        </div>
+      <div class="lcBox">
+        <h2 id="lcTitle">🎉 Nivå klar!</h2>
+        <p id="lcText"></p>
+        <button id="nextLevelBtn">Nästa nivå →</button>
+      </div>
     </div>
 
-    <div id="hud">WASD / thumbstick = gå &nbsp;|&nbsp; Mus / headset = titta runt</div>
+    <div id="hud">
+      WASD / thumbstick = gå &nbsp;|&nbsp; Mus / headset = titta runt
+    </div>
     <div id="levelBadge">Nivå <span id="levelNum">1</span></div>
-    <div id="progressBar">✅ <span id="qDone">0</span> / <span id="qTotal">0</span></div>
+    <div id="progressBar">
+      ✅ <span id="qDone">0</span> / <span id="qTotal">0</span>
+    </div>
 
-    <a-scene id="scene" maze-builder fog="type: linear; color: #87ceeb; near: 14; far: 30" renderer="antialias: true">
-        <a-sky color="#87ceeb"></a-sky>
-        <a-light type="directional" intensity="2.0" position="2 6 1" color="#fff8e0"></a-light>
-        <a-light type="ambient" intensity="0.8" color="#d0eeff"></a-light>
+    <a-scene
+      id="scene"
+      maze-builder
+      fog="type: linear; color: #87ceeb; near: 14; far: 30"
+      renderer="antialias: true"
+    >
+      <a-sky color="#87ceeb"></a-sky>
+      <a-light
+        type="directional"
+        intensity="2.0"
+        position="2 6 1"
+        color="#fff8e0"
+      ></a-light>
+      <a-light type="ambient" intensity="0.8" color="#d0eeff"></a-light>
 
-        <a-plane id="floor" rotation="-90 0 0" material="color: #4a8a3a; roughness: 1"></a-plane>
+      <a-plane
+        id="floor"
+        rotation="-90 0 0"
+        material="color: #4a8a3a; roughness: 1"
+      ></a-plane>
 
-        <a-entity id="exit">
-            <a-box id="exitGlow" width="2.2" height="3" depth="0.15" position="0 1.5 0"
-                material="color: #ff4444; emissive: #aa0000; emissiveIntensity: 0.5; opacity: 0.5; transparent: true"></a-box>
-            <a-text id="exitText" font="/fonts/inter/Inter-Regular.json" font-image="/fonts/inter/inter.png"
-                shader="msdf" negate="false" value="Svara på alla frågor" align="center" position="0 3.3 0"
-                color="#ff8888" width="5" wrap-count="20"></a-text>
-            <a-light type="point" intensity="1" distance="5" color="#ff4444" id="exitLight"></a-light>
-        </a-entity>
+      <a-entity id="exit">
+        <a-box
+          id="exitGlow"
+          width="2.2"
+          height="3"
+          depth="0.15"
+          position="0 1.5 0"
+          material="color: #ff4444; emissive: #aa0000; emissiveIntensity: 0.5; opacity: 0.5; transparent: true"
+        ></a-box>
+        <a-text
+          id="exitText"
+          font="/fonts/inter/Inter-Regular.json"
+          font-image="/fonts/inter/inter.png"
+          shader="msdf"
+          negate="false"
+          value="Svara på alla frågor"
+          align="center"
+          position="0 3.3 0"
+          color="#ff8888"
+          width="5"
+          wrap-count="20"
+        ></a-text>
+        <a-light
+          type="point"
+          intensity="1"
+          distance="5"
+          color="#ff4444"
+          id="exitLight"
+        ></a-light>
+      </a-entity>
 
-        <a-entity id="rig" position="0 0 0" player-controller>
-            <a-camera id="cam" look-controls="pointerLockEnabled: true; reverseMouseDrag: false"
-                wasd-controls="enabled: false" position="0 1.7 0" near="0.1"></a-camera>
-            <a-entity id="leftHand" laser-controls="hand: left" raycaster="objects: .clickable"
-                oculus-touch-controls="hand: left" vive-controls="hand: left"
-                windows-motion-controls="hand: left"></a-entity>
-            <a-entity id="rightHand" laser-controls="hand: right" raycaster="objects: .clickable"
-                oculus-touch-controls="hand: right" vive-controls="hand: right"
-                windows-motion-controls="hand: right"></a-entity>
-        </a-entity>
-
+      <a-entity id="rig" position="0 0 0" player-controller>
+        <a-camera
+          id="cam"
+          look-controls="pointerLockEnabled: true; reverseMouseDrag: false"
+          wasd-controls="enabled: false"
+          position="0 1.7 0"
+          near="0.1"
+        ></a-camera>
+        <a-entity
+          id="leftHand"
+          laser-controls="hand: left"
+          raycaster="objects: .clickable"
+          oculus-touch-controls="hand: left"
+          vive-controls="hand: left"
+          windows-motion-controls="hand: left"
+        ></a-entity>
+        <a-entity
+          id="rightHand"
+          laser-controls="hand: right"
+          raycaster="objects: .clickable"
+          oculus-touch-controls="hand: right"
+          vive-controls="hand: right"
+          windows-motion-controls="hand: right"
+        ></a-entity>
+      </a-entity>
     </a-scene>
-
-</body>
-
+  </body>
 </html>
