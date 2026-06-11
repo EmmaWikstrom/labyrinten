@@ -13,7 +13,7 @@
 
     <div id="startScreen">
         <div class="startModal" id="gradeChoice">
-            <h1>aMAZEing Minds</h1>
+            <h1>aMAZEing minds</h1>
             <p>Välj din årskurs så får du frågor som passar dig.</p>
 
             <h2>Årskurs</h2>
@@ -31,7 +31,7 @@
         </div>
 
         <div class="startModal hidden" id="subjectChoice">
-            <h1>aMAZEing Minds</h1>
+            <h1>aMAZEing minds</h1>
             <p id="selectedGradeText"></p>
 
             <h2>Ämne</h2>
@@ -91,10 +91,12 @@
         <a-entity id="rig" position="0 0 0" player-controller>
             <a-camera id="cam" look-controls="pointerLockEnabled: true; reverseMouseDrag: false"
                 wasd-controls="enabled: false" position="0 1.7 0" near="0.1"></a-camera>
-            <a-entity id="leftHand" laser-controls="hand: left" raycaster="objects: .clickable" oculus-touch-controls="hand: left"
-                vive-controls="hand: left" windows-motion-controls="hand: left"></a-entity>
-            <a-entity id="rightHand" laser-controls="hand: right" raycaster="objects: .clickable" oculus-touch-controls="hand: right"
-                vive-controls="hand: right" windows-motion-controls="hand: right"></a-entity>
+            <a-entity id="leftHand" laser-controls="hand: left" raycaster="objects: .clickable"
+                oculus-touch-controls="hand: left" vive-controls="hand: left"
+                windows-motion-controls="hand: left"></a-entity>
+            <a-entity id="rightHand" laser-controls="hand: right" raycaster="objects: .clickable"
+                oculus-touch-controls="hand: right" vive-controls="hand: right"
+                windows-motion-controls="hand: right"></a-entity>
         </a-entity>
 
     </a-scene>
