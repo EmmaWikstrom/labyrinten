@@ -13,8 +13,10 @@ const SUBJECTS = [
 const VR_FONT = '/fonts/inter/Inter-Regular.json';
 const VR_FONT_IMAGE = '/fonts/inter/inter.png';
 const VR_BUTTON_MATERIAL = 'color: #145c2a; emissive: #0d3f1d; emissiveIntensity: 0.15';
-const VR_PRIMARY_BUTTON_MATERIAL = 'color: #ffcc00; emissive: #cc9900; emissiveIntensity: 0.2';
-const VR_BUTTON_TEXT_Y = -0.018;
+const VR_PRIMARY_BUTTON_MATERIAL = VR_BUTTON_MATERIAL;
+const VR_PANEL_BORDER_COLOR = '#4a9a4a';
+const VR_ACCENT_BORDER_COLOR = '#ffcc00';
+const VR_BUTTON_TEXT_Y = 0;
 
 function applyVRFont(text) {
     text.setAttribute('font', VR_FONT);
@@ -130,9 +132,16 @@ function openVRModal(subject, grade, question, onAnswer) {
     panel.id = 'vrQuestionModal';
     panel.setAttribute('position', '0 -0.05 -1.6');
 
+    const border = document.createElement('a-plane');
+    border.setAttribute('width', String(modalWidth + 0.04));
+    border.setAttribute('height', String(modalHeight + 0.04));
+    border.setAttribute('material', `color: ${VR_PANEL_BORDER_COLOR}; opacity: 1; side: double`);
+    panel.appendChild(border);
+
     const background = document.createElement('a-plane');
     background.setAttribute('width', String(modalWidth));
     background.setAttribute('height', String(modalHeight));
+    background.setAttribute('position', '0 0 0.01');
     background.setAttribute('material', 'color: #0d2a0d; opacity: 0.96; transparent: true; side: double');
     panel.appendChild(background);
 
@@ -261,7 +270,9 @@ function openVRLevelComplete(levelIndex, subject, onNext) {
     closeVRLevelComplete();
 
     const isLast = levelIndex >= levels.length - 1;
-    const panel = createVRPanel('vrLevelComplete', 2.5, 1.25, '0 -0.05 -2.2');
+    const panel = createVRPanel('vrLevelComplete', 2.5, 1.25, '0 -0.05 -2.2', {
+        borderColor: VR_ACCENT_BORDER_COLOR,
+    });
 
     const title = createVRText(isLast ? 'Du klarade allt!' : 'Nivå klar!', '0 0.38 0.03', '#ffdd00', 2.2, 28);
     title.setAttribute('align', 'center');
@@ -281,7 +292,7 @@ function openVRLevelComplete(levelIndex, subject, onNext) {
 
     const nextButton = createVRButton(isLast ? 'Spela igen' : 'Nästa nivå', '0 -0.36 0.04', 1.6, 0.28, {
         material: VR_PRIMARY_BUTTON_MATERIAL,
-        textColor: '#1a3a1a',
+        borderColor: VR_ACCENT_BORDER_COLOR,
     });
     nextButton.addEventListener('click', () => {
         document.getElementById('levelComplete').classList.remove('open');
@@ -428,14 +439,21 @@ export function initStartScreen(onStart) {
     }
 }
 
-function createVRPanel(id, width, height, position) {
+function createVRPanel(id, width, height, position, options = {}) {
     const panel = document.createElement('a-entity');
     panel.id = id;
     panel.setAttribute('position', position);
 
+    const border = document.createElement('a-plane');
+    border.setAttribute('width', String(width + 0.04));
+    border.setAttribute('height', String(height + 0.04));
+    border.setAttribute('material', `color: ${options.borderColor || VR_PANEL_BORDER_COLOR}; opacity: 1; side: double`);
+    panel.appendChild(border);
+
     const background = document.createElement('a-plane');
     background.setAttribute('width', String(width));
     background.setAttribute('height', String(height));
+    background.setAttribute('position', '0 0 0.01');
     background.setAttribute('material', 'color: #0d2a0d; opacity: 0.96; transparent: true; side: double');
     panel.appendChild(background);
 
@@ -449,6 +467,15 @@ function createVRButton(label, position, width, height, options = {}) {
     button.setAttribute('height', String(height));
     button.setAttribute('position', position);
     button.setAttribute('material', options.material || VR_BUTTON_MATERIAL);
+
+    if (options.borderColor) {
+        const border = document.createElement('a-plane');
+        border.setAttribute('width', String(width + 0.04));
+        border.setAttribute('height', String(height + 0.04));
+        border.setAttribute('position', '0 0 -0.002');
+        border.setAttribute('material', `color: ${options.borderColor}; opacity: 1; side: double`);
+        button.appendChild(border);
+    }
 
     const text = createVRText(label, `0 ${VR_BUTTON_TEXT_Y} 0.02`, options.textColor || '#ffffff', width * 1.8, 24);
     text.setAttribute('align', 'center');
