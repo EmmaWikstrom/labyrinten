@@ -60,6 +60,8 @@ body {
     gap: 12px;
     max-width: 480px;
     width: 90%;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .gradeGrid {
