@@ -1,338 +1,340 @@
 * {
-    box-sizing: border-box;
+  box-sizing: border-box;
 }
 
 body {
-    margin: 0;
-    overflow: hidden;
-    font-family: 'Segoe UI', sans-serif;
+  margin: 0;
+  overflow: hidden;
+  font-family: "Segoe UI", sans-serif;
 }
 
 #startScreen {
-    position: fixed;
-    inset: 0;
-    background: linear-gradient(160deg, #1a4a1a, #0d2a0d);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    z-index: 100;
-    color: white;
+  position: fixed;
+  inset: 0;
+  background: linear-gradient(160deg, #1a4a1a, #0d2a0d);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  color: white;
 }
 
 .startModal {
-    width: min(90vw, 540px);
-    padding: 34px;
-    background: rgba(4, 28, 4, 0.82);
-    border: 2px solid #4a9a4a;
-    border-radius: 16px;
-    box-shadow: 0 24px 80px rgba(0, 0, 0, 0.35);
-    text-align: center;
+  width: min(90vw, 540px);
+  padding: 34px;
+  background: rgba(4, 28, 4, 0.82);
+  border: 2px solid #4a9a4a;
+  border-radius: 16px;
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.35);
+  text-align: center;
 }
 
 .startModal.hidden {
-    display: none;
+  display: none;
 }
 
 .startModal h1 {
-    font-size: 2.4rem;
-    color: #90ee90;
-    margin-bottom: 6px;
+  font-size: 2.4rem;
+  color: #90ee90;
+  margin-bottom: 6px;
 }
 
 .startModal h2 {
-    font-size: 0.9rem;
-    letter-spacing: 0.08em;
-    margin: 0 0 10px;
-    text-transform: uppercase;
-    color: #ffcc00;
+  font-size: 0.9rem;
+  letter-spacing: 0.08em;
+  margin: 0 0 10px;
+  text-transform: uppercase;
+  color: #ffcc00;
 }
 
 .startModal p {
-    color: #b0d0b0;
-    margin-bottom: 24px;
-    text-align: center;
+  color: #b0d0b0;
+  margin-bottom: 24px;
+  text-align: center;
 }
 
 .gradeGrid,
 .subjectGrid {
-    display: grid;
-    gap: 12px;
-    max-width: 480px;
-    width: 90%;
-    margin-left: auto;
-    margin-right: auto;
+  display: grid;
+  gap: 12px;
+  max-width: 480px;
+  width: 90%;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .gradeGrid {
-    grid-template-columns: repeat(9, 1fr);
-    margin-bottom: 24px;
+  grid-template-columns: repeat(9, 1fr);
+  margin-bottom: 24px;
 }
 
 .subjectGrid {
-    grid-template-columns: repeat(3, 1fr);
-    margin-bottom: 28px;
+  grid-template-columns: repeat(3, 1fr);
+  margin-bottom: 28px;
 }
 
 .gradeBtn,
 .subjectBtn {
-    padding: 16px 8px;
-    border-radius: 12px;
-    border: 2px solid transparent;
-    background: rgba(0, 80, 0, 0.4);
-    color: white;
-    font-size: 1rem;
-    cursor: pointer;
-    transition: all 0.2s;
+  padding: 16px 8px;
+  border-radius: 12px;
+  border: 2px solid transparent;
+  background: rgba(0, 80, 0, 0.4);
+  color: white;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.2s;
 }
 
 .gradeBtn {
-    aspect-ratio: 1;
-    padding: 0;
-    font-weight: bold;
+  aspect-ratio: 1;
+  padding: 0;
+  font-weight: bold;
 }
 
 .gradeBtn:hover,
 .subjectBtn:hover {
-    border-color: #90ee90;
+  border-color: #90ee90;
 }
 
 .gradeBtn.selected,
 .subjectBtn.selected {
-    border-color: #ffcc00;
-    color: #ffcc00;
+  border-color: #ffcc00;
+  color: #ffcc00;
 }
 
 #startBtn {
-    padding: 14px 48px;
-    background: #ffcc00;
-    color: #1a3a1a;
-    border: 2px solid #ffcc00;
-    border-radius: 24px;
-    font-size: 1.1rem;
-    font-weight: bold;
-    cursor: pointer;
-    opacity: 0.4;
-    transition: opacity 0.2s, border-color 0.2s;
+  padding: 14px 48px;
+  background: #ffcc00;
+  color: #1a3a1a;
+  border: 2px solid #ffcc00;
+  border-radius: 24px;
+  font-size: 1.1rem;
+  font-weight: bold;
+  cursor: pointer;
+  opacity: 0.4;
+  transition:
+    opacity 0.2s,
+    border-color 0.2s;
 }
 
 #startBtn.ready {
-    opacity: 1;
+  opacity: 1;
 }
 
 #startBtn.ready:hover {
-    border-color: #90ee90;
+  border-color: #90ee90;
 }
 
 .startActions {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
 }
 
 .startActions button {
-    min-width: 180px;
+  min-width: 180px;
 }
 
 .secondaryBtn {
-    padding: 14px 24px;
-    background: rgba(0, 80, 0, 0.4);
-    color: white;
-    border: 2px solid #2a6a2a;
-    border-radius: 24px;
-    font-size: 1rem;
-    font-weight: bold;
-    cursor: pointer;
+  padding: 14px 24px;
+  background: rgba(0, 80, 0, 0.4);
+  color: white;
+  border: 2px solid #2a6a2a;
+  border-radius: 24px;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
 }
 
 .secondaryBtn:hover {
-    border-color: #90ee90;
+  border-color: #90ee90;
 }
 
 #hud {
-    position: fixed;
-    top: 14px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: rgba(0, 0, 0, 0.55);
-    color: #fff;
-    font-family: monospace;
-    font-size: 12px;
-    padding: 5px 14px;
-    border-radius: 20px;
-    pointer-events: none;
-    z-index: 10;
-    display: none;
+  position: fixed;
+  top: 14px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.55);
+  color: #fff;
+  font-family: monospace;
+  font-size: 12px;
+  padding: 5px 14px;
+  border-radius: 20px;
+  pointer-events: none;
+  z-index: 10;
+  display: none;
 }
 
 #levelBadge {
-    position: fixed;
-    top: 14px;
-    left: 14px;
-    background: rgba(0, 60, 0, 0.75);
-    color: #90ee90;
-    font-family: monospace;
-    font-size: 13px;
-    padding: 5px 14px;
-    border-radius: 20px;
-    z-index: 10;
-    display: none;
+  position: fixed;
+  top: 14px;
+  left: 14px;
+  background: rgba(0, 60, 0, 0.75);
+  color: #90ee90;
+  font-family: monospace;
+  font-size: 13px;
+  padding: 5px 14px;
+  border-radius: 20px;
+  z-index: 10;
+  display: none;
 }
 
 #progressBar {
-    position: fixed;
-    top: 14px;
-    right: 14px;
-    background: rgba(0, 0, 0, 0.55);
-    color: #ffcc00;
-    font-family: monospace;
-    font-size: 12px;
-    padding: 5px 14px;
-    border-radius: 20px;
-    z-index: 10;
-    display: none;
+  position: fixed;
+  top: 14px;
+  right: 14px;
+  background: rgba(0, 0, 0, 0.55);
+  color: #ffcc00;
+  font-family: monospace;
+  font-size: 12px;
+  padding: 5px 14px;
+  border-radius: 20px;
+  z-index: 10;
+  display: none;
 }
 
 #modal {
-    display: none;
-    position: fixed;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.7);
-    align-items: center;
-    justify-content: center;
-    z-index: 50;
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  align-items: center;
+  justify-content: center;
+  z-index: 50;
 }
 
 #modal.open {
-    display: flex;
+  display: flex;
 }
 
 .modalBox {
-    background: linear-gradient(160deg, #0d2a0d, #1a4a1a);
-    border: 2px solid #4a9a4a;
-    border-radius: 16px;
-    padding: 32px;
-    max-width: 480px;
-    width: 90%;
-    color: white;
-    text-align: center;
+  background: linear-gradient(160deg, #0d2a0d, #1a4a1a);
+  border: 2px solid #4a9a4a;
+  border-radius: 16px;
+  padding: 32px;
+  max-width: 480px;
+  width: 90%;
+  color: white;
+  text-align: center;
 }
 
 .subject-tag {
-    font-size: 11px;
-    color: #90ee90;
-    text-transform: uppercase;
-    letter-spacing: 0.12em;
-    margin-bottom: 8px;
+  font-size: 11px;
+  color: #90ee90;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  margin-bottom: 8px;
 }
 
 .modalBox h2 {
-    font-size: 1.3rem;
-    margin: 0 0 22px;
-    line-height: 1.4;
+  font-size: 1.3rem;
+  margin: 0 0 22px;
+  line-height: 1.4;
 }
 
 .answerGrid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
-    margin-bottom: 14px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 14px;
 }
 
 .answerBtn {
-    padding: 12px;
-    background: rgba(0, 60, 0, 0.5);
-    border: 2px solid #2a6a2a;
-    border-radius: 10px;
-    color: white;
-    font-size: 0.95rem;
-    cursor: pointer;
-    transition: all 0.15s;
+  padding: 12px;
+  background: rgba(0, 60, 0, 0.5);
+  border: 2px solid #2a6a2a;
+  border-radius: 10px;
+  color: white;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.15s;
 }
 
 .answerBtn:hover:not(:disabled) {
-    border-color: #90ee90;
+  border-color: #90ee90;
 }
 
 .answerBtn.correct {
-    border-color: #44ff88;
-    color: #44ff88;
+  border-color: #44ff88;
+  color: #44ff88;
 }
 
 .answerBtn.wrong {
-    border-color: #ff6666;
-    color: #ff6666;
+  border-color: #ff6666;
+  color: #ff6666;
 }
 
 #modalFeedback {
-    font-size: 0.9rem;
-    min-height: 20px;
-    color: #aaddaa;
+  font-size: 0.9rem;
+  min-height: 20px;
+  color: #aaddaa;
 }
 
 #levelComplete {
-    display: none;
-    position: fixed;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.82);
-    align-items: center;
-    justify-content: center;
-    z-index: 60;
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.82);
+  align-items: center;
+  justify-content: center;
+  z-index: 60;
 }
 
 #levelComplete.open {
-    display: flex;
+  display: flex;
 }
 
 .lcBox {
-    background: linear-gradient(160deg, #0d2a0d, #1a4a1a);
-    border: 2px solid #ffcc00;
-    border-radius: 16px;
-    padding: 40px;
-    text-align: center;
-    color: white;
-    max-width: 400px;
+  background: linear-gradient(160deg, #0d2a0d, #1a4a1a);
+  border: 2px solid #ffcc00;
+  border-radius: 16px;
+  padding: 40px;
+  text-align: center;
+  color: white;
+  max-width: 480px;
 }
 
 .lcBox h2 {
-    color: #ffcc00;
-    font-size: 2rem;
-    margin-bottom: 8px;
+  color: #ffcc00;
+  font-size: 2rem;
+  margin-bottom: 8px;
 }
 
 .lcBox p {
-    color: #b0d0b0;
-    margin-bottom: 24px;
+  color: #b0d0b0;
+  margin-bottom: 24px;
 }
 
 .lcBox button {
-    padding: 12px 36px;
-    background: #ffcc00;
-    color: #1a3a1a;
-    border: none;
-    border-radius: 24px;
-    font-size: 1rem;
-    font-weight: bold;
-    cursor: pointer;
+  padding: 12px 36px;
+  background: #ffcc00;
+  color: #1a3a1a;
+  border: none;
+  border-radius: 24px;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
 }
 
 @media (max-width: 560px) {
-    .startModal {
-        padding: 24px;
-    }
+  .startModal {
+    padding: 24px;
+  }
 
-    .gradeGrid {
-        grid-template-columns: repeat(3, 1fr);
-        max-width: 280px;
-    }
+  .gradeGrid {
+    grid-template-columns: repeat(3, 1fr);
+    max-width: 280px;
+  }
 
-    .subjectGrid {
-        grid-template-columns: repeat(2, 1fr);
-    }
+  .subjectGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
 
-    .startActions {
-        flex-direction: column;
-    }
+  .startActions {
+    flex-direction: column;
+  }
 }
