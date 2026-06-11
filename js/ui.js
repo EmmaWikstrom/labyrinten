@@ -17,6 +17,7 @@ const VR_PRIMARY_BUTTON_MATERIAL = VR_BUTTON_MATERIAL;
 const VR_PANEL_BORDER_COLOR = '#4a9a4a';
 const VR_ACCENT_BORDER_COLOR = '#ffcc00';
 const VR_BUTTON_TEXT_Y = 0;
+const VR_WORD_BUTTON_TEXT_Y = -0.018;
 
 function applyVRFont(text) {
     text.setAttribute('font', VR_FONT);
@@ -283,7 +284,7 @@ function openVRLevelComplete(levelIndex, subject, onNext) {
             ? `Imponerande! Du klarade ${subjectNames[subject]} på alla nivåer.`
             : 'Bra jobbat! Nästa labyrint är större med fler frågor.',
         '0 0.08 0.03',
-        '#b0d0b0',
+        '#ffffff',
         2.15,
         34
     );
@@ -294,7 +295,7 @@ function openVRLevelComplete(levelIndex, subject, onNext) {
         material: VR_PRIMARY_BUTTON_MATERIAL,
         borderColor: VR_ACCENT_BORDER_COLOR,
         textColor: '#ffffff',
-        textY: 0.012,
+        textY: VR_WORD_BUTTON_TEXT_Y,
     });
     nextButton.addEventListener('click', () => {
         document.getElementById('levelComplete').classList.remove('open');
@@ -380,7 +381,7 @@ export function initStartScreen(onStart) {
 
         const camera = document.getElementById('cam');
         const panel = createVRPanel('vrStartScreen', 2.75, 2.25, '0 -0.05 -2.4');
-        panel.appendChild(createVRText('aMAZEing Minds', '0 0.88 0.03', '#90ee90', 2.4, 26));
+        panel.appendChild(createVRText('aMAZEing minds', '0 0.88 0.03', '#90ee90', 2.4, 26));
         panel.appendChild(createVRText('Välj årskurs', '0 0.62 0.03', '#ffcc00', 2.2, 28));
 
         for (let grade = 1; grade <= 9; grade++) {
@@ -413,7 +414,9 @@ export function initStartScreen(onStart) {
             const row = Math.floor(index / 2);
             const x = -0.53 + col * 1.06;
             const y = 0.25 - row * 0.35;
-            const button = createVRButton(subjectNames[subject], `${x} ${y} 0.04`, 0.9, 0.24);
+            const button = createVRButton(subjectNames[subject], `${x} ${y} 0.04`, 0.9, 0.24, {
+                textY: VR_WORD_BUTTON_TEXT_Y,
+            });
             button.addEventListener('click', () => {
                 startBtn.dataset.grade = selectedVRGrade;
                 startBtn.dataset.subject = subject;
@@ -422,7 +425,9 @@ export function initStartScreen(onStart) {
             panel.appendChild(button);
         });
 
-        const backButton = createVRButton('Tillbaka', '0 -0.84 0.04', 0.9, 0.24);
+        const backButton = createVRButton('Tillbaka', '0 -0.84 0.04', 0.9, 0.24, {
+            textY: VR_WORD_BUTTON_TEXT_Y,
+        });
         backButton.addEventListener('click', showVRGradeChoice);
         panel.appendChild(backButton);
 
